@@ -1,4 +1,4 @@
-# Go ORM API
+# Go ORM API using clean architecture
 
 ```bash
 docker image build --tag go-orm-api:latest .
