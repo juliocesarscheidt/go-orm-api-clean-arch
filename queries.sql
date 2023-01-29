@@ -19,5 +19,7 @@ CREATE TABLE `users` (
 
 select * from users;
 
+select COUNT(id) as counter from users;
+
 truncate users;
 show create table users;

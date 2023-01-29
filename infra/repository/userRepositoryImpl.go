@@ -29,12 +29,12 @@ func (userRepository UserRepository) GetUser(id int) (*entity.User, error) {
 	return user, nil
 }
 
-func (userRepository UserRepository) CreateUser(user *entity.User) error {
+func (userRepository UserRepository) CreateUser(user *entity.User) (int, error) {
 	result := userRepository.Db.Create(user)
 	if result.RowsAffected == 0 {
-		return errors.New("Internal Server Error")
+		return 0, errors.New("Internal Server Error")
 	}
-	return nil
+	return user.Id, nil
 }
 
 func (userRepository UserRepository) UpdateUser(id int, user *entity.User) error {
@@ -51,4 +51,14 @@ func (userRepository UserRepository) DeleteUser(id int) error {
 		return errors.New("Not Found")
 	}
 	return nil
+}
+
+func (userRepository UserRepository) CountUsers() (int, error) {
+	// using raw query
+	var counter int
+	result := userRepository.Db.Raw("SELECT COUNT(id) as counter FROM `users` WHERE `users`.`deleted_at` IS NULL").Scan(&counter)
+	if result.RowsAffected == 0 {
+		return 0, errors.New("Not Found")
+	}
+	return counter, nil
 }

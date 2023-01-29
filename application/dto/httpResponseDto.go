@@ -1,10 +1,7 @@
 package dto
 
-// HttpResponseDto - simple HTTP response DTO
+// HttpResponseDto - simple HTTP response DTO for data
 type HttpResponseDto struct {
-	Data interface{} `json:"data"`
-}
-
-type HttpResponseMessageDto struct {
-	Message interface{} `json:"message"`
+	Data     interface{} `json:"data"`
+	Metadata interface{} `json:"metadata"`
 }

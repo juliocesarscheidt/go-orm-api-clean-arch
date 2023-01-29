@@ -6,11 +6,11 @@ import (
 	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
 )
 
-type DeleteUserUsecase struct {
+type CountUsersUsecase struct {
 	UserRepository  repository.UserRepository
 	PasswordService domainservice.PasswordService
 }
 
-func (usecase *DeleteUserUsecase) Execute(deleteUserDto *dto.DeleteUserDto) error {
-	return usecase.UserRepository.DeleteUser(deleteUserDto.Id)
+func (usecase *CountUsersUsecase) Execute(countUsersDto *dto.CountUsersDto) (int, error) {
+	return usecase.UserRepository.CountUsers()
 }
