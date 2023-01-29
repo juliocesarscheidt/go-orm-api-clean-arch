@@ -2,17 +2,22 @@ package usecase
 
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
+	"github.com/juliocesarscheidt/go-orm-api/domain/entity"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
-	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
+	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
 )
 
 type UpdateUserUsecase struct {
-	UserRepository repository.UserRepository
+	UserRepository  repository.UserRepository
+	PasswordService domainservice.PasswordService
 }
 
 func (usecase *UpdateUserUsecase) Execute(updateUserDto *dto.UpdateUserDto) error {
-	passwordService := &infraservice.PasswordService{}
-	user := updateUserDto.NewUser(passwordService)
+	userBuilder := entity.UserBuilder{PasswordService: usecase.PasswordService}
+	user, err := userBuilder.AlterUser(updateUserDto.Name, updateUserDto.Password)
+	if err != nil {
+		return err
+	}
 	if err := usecase.UserRepository.UpdateUser(updateUserDto.Id, user); err != nil {
 		return err
 	}

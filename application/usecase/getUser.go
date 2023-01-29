@@ -4,10 +4,12 @@ import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	applicationservice "github.com/juliocesarscheidt/go-orm-api/application/service"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
 )
 
 type GetUserUsecase struct {
-	UserRepository repository.UserRepository
+	UserRepository  repository.UserRepository
+	PasswordService domainservice.PasswordService
 }
 
 func (usecase *GetUserUsecase) Execute(getUserDto *dto.GetUserDto) (*dto.UserViewDto, error) {

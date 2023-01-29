@@ -4,10 +4,12 @@ import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	applicationservice "github.com/juliocesarscheidt/go-orm-api/application/service"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
 )
 
 type GetUsersUsecase struct {
-	UserRepository repository.UserRepository
+	UserRepository  repository.UserRepository
+	PasswordService domainservice.PasswordService
 }
 
 func (usecase *GetUsersUsecase) Execute(getUsersDto *dto.GetUsersDto) ([]*dto.UserViewDto, error) {
@@ -19,5 +21,7 @@ func (usecase *GetUsersUsecase) Execute(getUsersDto *dto.GetUsersDto) ([]*dto.Us
 	for _, user := range users {
 		usersDto = append(usersDto, applicationservice.MapUserToDto(user))
 	}
+	// free memory space
+	users = nil
 	return usersDto, nil
 }

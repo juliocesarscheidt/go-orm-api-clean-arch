@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -29,44 +28,46 @@ func GetValueFromFormAsInt(function func(key string) string, field string) (int,
 }
 
 func ThrowInternalServerError(w http.ResponseWriter, message string) {
-	fmt.Println(message)
+	utils.Logger.Infof(message)
 	w.WriteHeader(http.StatusInternalServerError)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
 func ThrowBadRequest(w http.ResponseWriter, message string) {
-	fmt.Println(message)
+	utils.Logger.Infof(message)
 	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
 func ThrowUnauthorized(w http.ResponseWriter, message string) {
-	fmt.Println(message)
+	utils.Logger.Infof(message)
 	w.WriteHeader(http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
 func ThrowNotFound(w http.ResponseWriter, message string) {
-	fmt.Println(message)
+	utils.Logger.Infof(message)
 	w.WriteHeader(http.StatusNotFound)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
 func HandleError(w http.ResponseWriter, err error) {
-	fmt.Println(fmt.Sprintf("Message %v", err.Error()))
+	message := err.Error()
+	utils.Logger.Infof(message)
 
-	if err.Error() == "Not Found" {
-		ThrowNotFound(w, err.Error())
+	if message == "Not Found" {
+		ThrowNotFound(w, message)
 		return
-
-	} else if err.Error() == "Bad Request" {
-		ThrowBadRequest(w, err.Error())
+	} else if message == "Bad Request" {
+		ThrowBadRequest(w, message)
 		return
-
-	} else if err.Error() == "Internal Server Error" {
-		ThrowInternalServerError(w, err.Error())
+	} else if message == "Invalid Name" || message == "Invalid Email" || message == "Invalid Password" {
+		ThrowBadRequest(w, message)
+		return
+	} else if message == "Internal Server Error" {
+		ThrowInternalServerError(w, message)
 		return
 	}
 
-	ThrowInternalServerError(w, err.Error())
+	ThrowInternalServerError(w, message)
 }

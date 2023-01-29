@@ -8,17 +8,23 @@ import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
+
+var passwordService *infraservice.PasswordService
+
+func init() {
+	passwordService = &infraservice.PasswordService{}
+}
 
 func GetUser(userRepository repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
-
 		getUserDto := &dto.GetUserDto{Id: int(id)}
 
-		getUserUsecase := usecase.GetUserUsecase{UserRepository: userRepository}
+		getUserUsecase := usecase.GetUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		user, err := getUserUsecase.Execute(getUserDto)
 		if err != nil {
 			HandleError(w, err)
@@ -42,7 +48,7 @@ func GetUsers(userRepository repository.UserRepository) http.HandlerFunc {
 		size, _ := GetValueFromFormAsInt(r.FormValue, "size")
 		getUsersDto := &dto.GetUsersDto{Page: page, Size: size}
 
-		getUsersUsecase := usecase.GetUsersUsecase{UserRepository: userRepository}
+		getUsersUsecase := usecase.GetUsersUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		users, err := getUsersUsecase.Execute(getUsersDto)
 		if err != nil {
 			HandleError(w, err)
@@ -64,7 +70,7 @@ func CreateUser(userRepository repository.UserRepository) http.HandlerFunc {
 			return
 		}
 
-		createUserUsecase := usecase.CreateUserUsecase{UserRepository: userRepository}
+		createUserUsecase := usecase.CreateUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		err := createUserUsecase.Execute(createUserDto)
 		if err != nil {
 			HandleError(w, err)
@@ -88,7 +94,7 @@ func UpdateUser(userRepository repository.UserRepository) http.HandlerFunc {
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
 		updateUserDto.Id = int(id)
 
-		updateUserUsecase := usecase.UpdateUserUsecase{UserRepository: userRepository}
+		updateUserUsecase := usecase.UpdateUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		if err := updateUserUsecase.Execute(updateUserDto); err != nil {
 			HandleError(w, err)
 			return
@@ -106,7 +112,7 @@ func DeleteUser(userRepository repository.UserRepository) http.HandlerFunc {
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
 		deleteUserDto := &dto.DeleteUserDto{Id: id}
 
-		deleteUserUsecase := usecase.DeleteUserUsecase{UserRepository: userRepository}
+		deleteUserUsecase := usecase.DeleteUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		if err := deleteUserUsecase.Execute(deleteUserDto); err != nil {
 			HandleError(w, err)
 			return
