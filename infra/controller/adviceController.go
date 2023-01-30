@@ -9,7 +9,6 @@ import (
 func HandleError(w http.ResponseWriter, err error) {
 	message := err.Error()
 	utils.Logger.Infof(message)
-
 	if message == "Not Found" {
 		ThrowNotFound(w, message)
 		return
@@ -23,6 +22,5 @@ func HandleError(w http.ResponseWriter, err error) {
 		ThrowInternalServerError(w, message)
 		return
 	}
-
 	ThrowInternalServerError(w, message)
 }
