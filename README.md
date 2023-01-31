@@ -1,4 +1,4 @@
-# Simple Go API following clean architecture, using Mux, Go ORM and Prometheus
+# Simple Go API implementing clean architecture, using Mux, Go ORM and Prometheus
 
 
 ## Running with docker compose
