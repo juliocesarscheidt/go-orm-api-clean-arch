@@ -1,7 +1,9 @@
 create schema go_orm_api;
+
 drop schema go_orm_api;
 
 use go_orm_api;
+
 show tables;
 
 CREATE TABLE `users` (
@@ -22,4 +24,5 @@ select * from users;
 select COUNT(id) as counter from users;
 
 truncate users;
+
 show create table users;

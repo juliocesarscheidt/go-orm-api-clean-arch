@@ -1,0 +1,59 @@
+version: '3.4'
+
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+networks:
+  subnet_0:
+    driver: bridge
+
+volumes:
+  mysql-data: {}
+
+secrets: {}
+
+services:
+  mysql:
+    container_name: mysql
+    hostname: mysql
+    image: mysql:8.0
+    ports:
+      - '3306:3306'
+      - '33060:33060'
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-go_orm_api}
+      TZ: 'America/Sao_Paulo'
+    networks:
+      - subnet_0
+    restart: on-failure
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    logging: *logging
+
+  go-orm-api:
+    container_name: go-orm-api
+    hostname: go-orm-api
+    image: juliocesarmidia/go-orm-api:latest
+    build:
+      context: ./
+      cache_from:
+        - juliocesarmidia/go-orm-api:latest
+    restart: on-failure
+    networks:
+      - subnet_0
+    ports:
+      - 8000:8000
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASS: ${MYSQL_PASS}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-go_orm_api}
+    volumes: []
+    logging: *logging

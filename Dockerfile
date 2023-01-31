@@ -8,7 +8,8 @@ RUN go mod download
 
 COPY ./ ./
 
-RUN GOOS=linux GOARCH=amd64 GO111MODULE=on CGO_ENABLED=0 go build -ldflags="-s -w" -o /go/src/app/main .
+RUN GOOS=linux GOARCH=amd64 GO111MODULE=on CGO_ENABLED=0 \
+    go build -ldflags="-s -w" -o /go/src/app/main .
 
 FROM gcr.io/distroless/static:nonroot
 
