@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -17,14 +15,8 @@ import (
 )
 
 func main() {
-	dbHost := os.Getenv("MYSQL_HOST")
-	dbPort := os.Getenv("MYSQL_PORT")
-	dbUser := os.Getenv("MYSQL_USER")
-	dbPass := os.Getenv("MYSQL_PASS")
-	dbDatabase := os.Getenv("MYSQL_DATABASE")
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbPort, dbDatabase)
-	db, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	connectionString := utils.GetDbConnectionString()
+	db, _ := gorm.Open(mysql.Open(connectionString), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: false,
 	})
 	if err := db.AutoMigrate(&entity.User{}); err != nil {
