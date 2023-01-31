@@ -7,6 +7,7 @@ import (
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
 	"github.com/juliocesarscheidt/go-orm-api/infra/controller"
 	"github.com/juliocesarscheidt/go-orm-api/shared/utils"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // LogMiddleware - custom logger middleware method
@@ -32,4 +33,5 @@ func InjectRoutes(router *mux.Router, userRepository repository.UserRepository) 
 	router.Path("/api/v1/users").HandlerFunc(controller.CreateUser(userRepository)).Methods(http.MethodPost)
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(controller.UpdateUser(userRepository)).Methods(http.MethodPut)
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(controller.DeleteUser(userRepository)).Methods(http.MethodDelete)
+	router.Path("/metrics").Handler(promhttp.Handler()).Methods(http.MethodGet)
 }

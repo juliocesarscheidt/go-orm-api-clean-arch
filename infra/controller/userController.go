@@ -27,7 +27,7 @@ func GetUser(userRepository repository.UserRepository) http.HandlerFunc {
 		getUserUsecase := usecase.GetUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		user, err := getUserUsecase.Execute(getUserDto)
 		if err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 		if user == nil {
@@ -35,8 +35,7 @@ func GetUser(userRepository repository.UserRepository) http.HandlerFunc {
 			return
 		}
 
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(&dto.HttpResponseDto{Data: user, Metadata: nil})
+		SendOk(w, r, user, nil)
 	}
 }
 
@@ -51,7 +50,7 @@ func GetUsers(userRepository repository.UserRepository) http.HandlerFunc {
 		getUsersUsecase := usecase.GetUsersUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		users, err := getUsersUsecase.Execute(getUsersDto)
 		if err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 
@@ -59,12 +58,11 @@ func GetUsers(userRepository repository.UserRepository) http.HandlerFunc {
 		countUsersUsecase := usecase.CountUsersUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		counter, err := countUsersUsecase.Execute(countUsersDto)
 		if err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(&dto.HttpResponseDto{Data: users, Metadata: map[string]int{"total": counter}})
+		SendOk(w, r, users, map[string]int{"total": counter})
 	}
 }
 
@@ -74,19 +72,18 @@ func CreateUser(userRepository repository.UserRepository) http.HandlerFunc {
 
 		var createUserDto *dto.CreateUserDto
 		if err := json.NewDecoder(r.Body).Decode(&createUserDto); err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 
 		createUserUsecase := usecase.CreateUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		id, err := createUserUsecase.Execute(createUserDto)
 		if err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 
-		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(&dto.HttpResponseDto{Data: id, Metadata: nil})
+		SendCreated(w, r, id, nil)
 	}
 }
 
@@ -96,7 +93,7 @@ func UpdateUser(userRepository repository.UserRepository) http.HandlerFunc {
 
 		var updateUserDto *dto.UpdateUserDto
 		if err := json.NewDecoder(r.Body).Decode(&updateUserDto); err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
@@ -104,12 +101,11 @@ func UpdateUser(userRepository repository.UserRepository) http.HandlerFunc {
 
 		updateUserUsecase := usecase.UpdateUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		if err := updateUserUsecase.Execute(updateUserDto); err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
 
-		w.WriteHeader(http.StatusAccepted)
-		json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: "Success"})
+		SendAccepted(w, r, "Success")
 	}
 }
 
@@ -122,9 +118,10 @@ func DeleteUser(userRepository repository.UserRepository) http.HandlerFunc {
 
 		deleteUserUsecase := usecase.DeleteUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
 		if err := deleteUserUsecase.Execute(deleteUserDto); err != nil {
-			HandleError(w, err)
+			HandleError(w, r, err)
 			return
 		}
-		w.WriteHeader(http.StatusNoContent)
+
+		SendNoContent(w, r)
 	}
 }

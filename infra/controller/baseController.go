@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -19,7 +20,7 @@ func GetValueFromParamsAsInt(vars map[string]string, field string) (int, error) 
 }
 
 func GetValueFromFormAsInt(function func(key string) string, field string) (int, error) {
-	value, err := strconv.ParseInt(function(field), 10, 64)
+	value, err := strconv.Atoi(function(field))
 	if err != nil {
 		return 0, err
 	}
@@ -27,26 +28,46 @@ func GetValueFromFormAsInt(function func(key string) string, field string) (int,
 	return int(value), nil
 }
 
-func ThrowInternalServerError(w http.ResponseWriter, message string) {
-	utils.Logger.Infof(message)
-	w.WriteHeader(http.StatusInternalServerError)
+func putMetricsAndSetHeader(w http.ResponseWriter, r *http.Request, statusCode int) {
+	utils.PutPrometheusMetrics(r.RequestURI, r.Method, fmt.Sprint(statusCode))
+	w.WriteHeader(statusCode)
+}
+
+func SendOk(w http.ResponseWriter, r *http.Request, data, metadata interface{}) {
+	putMetricsAndSetHeader(w, r, http.StatusOK)
+	json.NewEncoder(w).Encode(&dto.HttpResponseDto{Data: data, Metadata: metadata})
+}
+
+func SendCreated(w http.ResponseWriter, r *http.Request, data, metadata interface{}) {
+	putMetricsAndSetHeader(w, r, http.StatusCreated)
+	json.NewEncoder(w).Encode(&dto.HttpResponseDto{Data: data, Metadata: metadata})
+}
+
+func SendAccepted(w http.ResponseWriter, r *http.Request, message string) {
+	putMetricsAndSetHeader(w, r, http.StatusAccepted)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
-func ThrowBadRequest(w http.ResponseWriter, message string) {
-	utils.Logger.Infof(message)
-	w.WriteHeader(http.StatusBadRequest)
+func SendNoContent(w http.ResponseWriter, r *http.Request) {
+	putMetricsAndSetHeader(w, r, http.StatusNoContent)
+}
+
+func SendBadRequest(w http.ResponseWriter, r *http.Request, message string) {
+	putMetricsAndSetHeader(w, r, http.StatusBadRequest)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
-func ThrowUnauthorized(w http.ResponseWriter, message string) {
-	utils.Logger.Infof(message)
-	w.WriteHeader(http.StatusUnauthorized)
+func SendUnauthorized(w http.ResponseWriter, r *http.Request, message string) {
+	putMetricsAndSetHeader(w, r, http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
-func ThrowNotFound(w http.ResponseWriter, message string) {
-	utils.Logger.Infof(message)
-	w.WriteHeader(http.StatusNotFound)
+func SendNotFound(w http.ResponseWriter, r *http.Request, message string) {
+	putMetricsAndSetHeader(w, r, http.StatusNotFound)
+	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
+}
+
+func SendInternalServerError(w http.ResponseWriter, r *http.Request, message string) {
+	putMetricsAndSetHeader(w, r, http.StatusInternalServerError)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }

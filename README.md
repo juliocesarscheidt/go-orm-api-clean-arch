@@ -1,4 +1,4 @@
-# Go ORM API using clean architecture
+# Simple Go API following clean architecture, using Mux, Go ORM and Prometheus
 
 
 ## Running with docker compose
@@ -45,4 +45,8 @@ curl --silent -X PUT \
 }'
 
 curl --silent -X DELETE --url 'http://localhost:8000/api/v1/users/1'
+
+# metrics
+curl --silent -X GET --url 'http://localhost:8000/metrics'
+curl --silent -X GET --url 'http://localhost:8000/metrics' | grep api_http_request
 ```
