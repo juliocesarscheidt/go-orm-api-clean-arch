@@ -33,7 +33,6 @@ services:
     restart: on-failure
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     logging: *logging
 
   go-orm-api:
@@ -44,9 +43,6 @@ services:
       context: ./
       cache_from:
         - juliocesarmidia/go-orm-api:latest
-    restart: on-failure
-    networks:
-      - subnet_0
     ports:
       - 8000:8000
     environment:
@@ -55,5 +51,8 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASS: ${MYSQL_PASS}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-go_orm_api}
+    networks:
+      - subnet_0
+    restart: on-failure
     volumes: []
     logging: *logging
