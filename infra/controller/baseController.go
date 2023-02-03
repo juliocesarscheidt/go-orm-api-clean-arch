@@ -57,6 +57,11 @@ func SendBadRequest(w http.ResponseWriter, r *http.Request, message string) {
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
+func SendUnprocessableEntity(w http.ResponseWriter, r *http.Request, message string) {
+	putMetricsAndSetHeader(w, r, http.StatusUnprocessableEntity)
+	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
+}
+
 func SendUnauthorized(w http.ResponseWriter, r *http.Request, message string) {
 	putMetricsAndSetHeader(w, r, http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})

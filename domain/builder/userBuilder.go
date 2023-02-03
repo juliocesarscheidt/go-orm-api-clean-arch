@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"errors"
 	"time"
 
 	"github.com/juliocesarscheidt/go-orm-api/domain/entity"
@@ -12,9 +13,12 @@ type UserBuilder struct {
 }
 
 func (builder UserBuilder) NewUser(name string, email string, password string) (*entity.User, error) {
-	err := entity.ValidateUserFields(map[string]string{"Name": name, "Email": email, "Password": password})
+	err := entity.ValidateUserFields(map[string]string{"name": name, "email": email, "password": password})
 	if err != nil {
 		return nil, err
+	}
+	if len(password) < 8 || len(password) > 50 {
+		return nil, errors.New("Invalid password length")
 	}
 	hashedPassword, _ := builder.PasswordService.EncryptPassword(password)
 	user := &entity.User{
@@ -27,9 +31,12 @@ func (builder UserBuilder) NewUser(name string, email string, password string) (
 }
 
 func (builder UserBuilder) AlterUser(name string, password string) (*entity.User, error) {
-	err := entity.ValidateUserFields(map[string]string{"Name": name, "Password": password})
+	err := entity.ValidateUserFields(map[string]string{"name": name, "password": password})
 	if err != nil {
 		return nil, err
+	}
+	if len(password) < 8 || len(password) > 50 {
+		return nil, errors.New("Invalid password length")
 	}
 	hashedPassword, _ := builder.PasswordService.EncryptPassword(password)
 	user := &entity.User{

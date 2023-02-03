@@ -24,7 +24,7 @@ func ValidateUserFields(fields map[string]string) error {
 	errorMessages := []string{}
 	for key, field := range fields {
 		if field == "" {
-			errorMessages = append(errorMessages, fmt.Sprintf("Invalid %s", strings.Title(key)))
+			errorMessages = append(errorMessages, fmt.Sprintf("Invalid %s", strings.ToLower(key)))
 		}
 	}
 	if len(errorMessages) > 0 {
