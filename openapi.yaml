@@ -37,8 +37,7 @@ paths:
                         type: string
                         example: 'Healthy'
                   metadata:
-                    type: object
-                    example: null
+                    $ref: '#/components/schemas/Metadata'
         '500':
           description: 'Internal server error'
           content:
@@ -46,14 +45,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/DefaultResponseServerError'
 
-  /api/v1/user:
+  /api/v1/users:
     post:
       tags:
         - UserServices
       summary: create user
       operationId: createUser
-      security:
-        - BearerAuth: []
+      # security:
+      #   - BearerAuth: []
       requestBody:
         content:
           application/json:
@@ -96,8 +95,8 @@ paths:
         - UserServices
       summary: list user
       operationId: listUser
-      security:
-        - BearerAuth: []
+      # security:
+      #   - BearerAuth: []
       parameters:
         - name: page
           in: query
@@ -135,14 +134,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/DefaultResponseServerError'
 
-  /api/v1/user/{id}:
+  /api/v1/users/{id}:
     get:
       tags:
         - UserServices
       summary: get user
       operationId: getUser
-      security:
-        - BearerAuth: []
+      # security:
+      #   - BearerAuth: []
       parameters:
       - name: id
         in: path
@@ -187,8 +186,8 @@ paths:
         - UserServices
       summary: update user
       operationId: updateUser
-      security:
-        - BearerAuth: []
+      # security:
+      #   - BearerAuth: []
       parameters:
       - name: id
         in: path
@@ -241,8 +240,8 @@ paths:
         - UserServices
       summary: delete user
       operationId: deleteUser
-      security:
-        - BearerAuth: []
+      # security:
+      #   - BearerAuth: []
       parameters:
       - name: id
         in: path
@@ -344,11 +343,11 @@ components:
 
     Metadata:
       type: object
+      nullable: true
       properties:
         total:
           type: number
           example: 10
-      example: null
 
     CreatedAt:
       type: string
@@ -361,9 +360,12 @@ components:
       example: '2021-01-01T12:00:00.000Z'
 
     DeletedAt:
-      type: string
-      format: date-time
-      example: '2021-01-01T12:00:00.000Z'
+      anyOf:
+        - type: string
+          format: date-time
+          example: '2021-01-01T12:00:00.000Z'
+        - type: string
+          example: ""
 
     UserBodyCreate:
       type: object

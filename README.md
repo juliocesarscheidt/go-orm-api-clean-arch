@@ -36,7 +36,7 @@ curl --silent -X GET --url 'http://localhost:8000/api/v1/users?page=0&size=10'
 
 curl --silent -X GET --url 'http://localhost:8000/api/v1/users/1'
 
-curl --silent -X PUT \
+curl -i --silent -X PUT \
   --url 'http://localhost:8000/api/v1/users/1' \
   --header 'content-type: application/json' \
   --data '{
@@ -44,7 +44,10 @@ curl --silent -X PUT \
 	"password": "PASSWORD_CHANGED"
 }'
 
-curl --silent -X DELETE --url 'http://localhost:8000/api/v1/users/1'
+curl -i --silent -X DELETE --url 'http://localhost:8000/api/v1/users/1'
+
+# health
+curl --silent -X GET --url 'http://localhost:8000/healthcheck'
 
 # metrics
 curl --silent -X GET --url 'http://localhost:8000/metrics'
