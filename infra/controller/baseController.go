@@ -45,7 +45,6 @@ func SendCreated(w http.ResponseWriter, r *http.Request, data, metadata interfac
 
 func SendAccepted(w http.ResponseWriter, r *http.Request, message string) {
 	putMetricsAndSetHeader(w, r, http.StatusAccepted)
-	json.NewEncoder(w).Encode(&dto.HttpResponseMessageDto{Message: message})
 }
 
 func SendNoContent(w http.ResponseWriter, r *http.Request) {

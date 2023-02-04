@@ -1,0 +1,428 @@
+openapi: 3.0.1
+info:
+  title: go-orm-api
+  description: go-orm-api
+  version: v1
+  contact:
+    name: Julio Scheidt
+    email: julio@blackdevs.com.br
+servers:
+  - url: http://go-orm-api.{NAMESPACE}.svc.cluster.local:8000/
+
+tags:
+  - name: HealthChechServices
+    description: Services related to Health Chech resources
+  - name: UserServices
+    description: Services related to User resources
+
+paths:
+  /healthcheck:
+    get:
+      tags:
+        - HealthChechServices
+      summary: get healthcheck
+      operationId: getHealthcheck
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: 'Healthy'
+                  metadata:
+                    type: object
+                    example: null
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+  /api/v1/user:
+    post:
+      tags:
+        - UserServices
+      summary: create user
+      operationId: createUser
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UserBodyCreate'
+                - type: object
+                  properties:
+                    password:
+                      $ref: '#/components/schemas/Password'
+
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserSuccessResponse'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBadRequest'
+        '422':
+          description: 'Unprocessable Entity'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUnprocessableEntityInvalidPasswordLength'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+    get:
+      tags:
+        - UserServices
+      summary: list user
+      operationId: listUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page to search
+          required: true
+          schema:
+            type: integer
+            example: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Size of page
+          required: true
+          schema:
+            type: integer
+            example: 50
+            maximum: 100
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUserSuccessResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUnauthorized'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+  /api/v1/user/{id}:
+    get:
+      tags:
+        - UserServices
+      summary: get user
+      operationId: getUser
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Id for user
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserSuccessResponse'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBadRequest'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUnauthorized'
+        '404':
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseNotFound'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+    put:
+      tags:
+        - UserServices
+      summary: update user
+      operationId: updateUser
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Id for user
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserBodyUpdate'
+      responses:
+        '202':
+          description: 'Accepted'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBadRequest'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUnauthorized'
+        '404':
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseNotFound'
+
+        '422':
+          description: 'Unprocessable Entity'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUnprocessableEntityInvalidPasswordLength'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+    delete:
+      tags:
+        - UserServices
+      summary: delete user
+      operationId: deleteUser
+      security:
+        - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Id for user
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        '204':
+          description: 'No Content'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseBadRequest'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseUnauthorized'
+        '404':
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseNotFound'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    DefaultResponseBadRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Status code'
+          example: 'Bad request'
+
+    DefaultResponseUnauthorized:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Status code'
+          example: 'Unauthorized'
+
+    DefaultResponseNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Status code'
+          example: 'Not found'
+
+    ResponseUnprocessableEntityInvalidPasswordLength:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Status code'
+          example: 'Invalid password length, the password must have at least 8 and at most 50 characters'
+
+    DefaultResponseServerError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Status code'
+          example: 'Internal server error'
+
+    Id:
+      type: number
+      example: 1
+
+    Name:
+      type: string
+      example: John Doe
+
+    Email:
+      type: string
+      example: johndoe@mail.com
+
+    Password:
+      type: string
+      minLength: 8
+      maxLength: 50
+
+    Metadata:
+      type: object
+      properties:
+        total:
+          type: number
+          example: 10
+      example: null
+
+    CreatedAt:
+      type: string
+      format: date-time
+      example: '2021-01-01T12:00:00.000Z'
+
+    UpdatedAt:
+      type: string
+      format: date-time
+      example: '2021-01-01T12:00:00.000Z'
+
+    DeletedAt:
+      type: string
+      format: date-time
+      example: '2021-01-01T12:00:00.000Z'
+
+    UserBodyCreate:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          $ref: '#/components/schemas/Email'
+
+    UserBodyUpdate:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        password:
+          $ref: '#/components/schemas/Password'
+
+    UserFull:
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        created_at:
+          $ref: '#/components/schemas/CreatedAt'
+        updated_at:
+          $ref: '#/components/schemas/UpdatedAt'
+        deleted_at:
+          $ref: '#/components/schemas/DeletedAt'
+
+    BearerToken:
+      type: string
+      example: >-
+        eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTdmOWFiMzRmMDUwZmM0MTk5Y2Y5MThiIiwibmFtZSI6Imp1bGlvIiwic3VybmFtZSI6ImNlc2FyIiwiZW1haWwiOiJqdWxpb0BtYWlsLmNvbSIsInBob25lIjoiKzU1NDE5OTg4Nzc2NiIsImlhdCI6MTY0NzU2NzkxNiwiZXhwIjoxNjQ3NTcxNTE2LCJhdWQiOiJ1cm46Ym9vay1yZWNvbW1lbmRhdGlvbnM6YXBpLWdhdGV3YXkiLCJpc3MiOiJ1cm46Ym9vay1yZWNvbW1lbmRhdGlvbnM6dXNlcnMtbWljcm9zZXJ2aWNlIn0.Anff7tEPzaqIlpPFgqNNoxKg0CapOxLl6EaI5I3EmR48VyMJYsm3MWhRpXoTpoGoH_cUXu9AVXAY39kueVZP2-eJmq6sHh8awrjlEOh14mx9og_inaOZps8g-tUE0g93LAbPMAnxeMU584Gorg3xaJpe-RsJn5QttWNX2WgqmFJKKZ4v38Bb5w75SzLFQ0G5FiobwNHJmmqV5z4HFqkRyU-6D65sn_LwrS_TgQ8cw73bpHyfQfoDCkngNjGEpzvi6CEvWNkiPLAgHJiwrnJHNVIF1zt0Ltj3DxgRh_R4TEpLpmUTKxBpTjGbSzbuXSGYqdLEy0EFd9CinOyE04h_0Q
+
+    CreateUserSuccessResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Id'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+
+    GetUserSuccessResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UserFull'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+
+    ListUserSuccessResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserFull'
+        metadata:
+          $ref: '#/components/schemas/Metadata'

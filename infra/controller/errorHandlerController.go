@@ -10,10 +10,10 @@ import (
 func HandleError(w http.ResponseWriter, r *http.Request, err error) {
 	message := err.Error()
 	utils.Logger.Infof(message)
-	if message == "Not Found" {
+	if message == "Not found" {
 		SendNotFound(w, r, message)
 		return
-	} else if message == "Bad Request" {
+	} else if message == "Bad request" {
 		SendBadRequest(w, r, message)
 		return
 	} else if message == "Invalid password length" {
@@ -24,7 +24,7 @@ func HandleError(w http.ResponseWriter, r *http.Request, err error) {
 		strings.Contains(message, "Invalid password") {
 		SendBadRequest(w, r, message)
 		return
-	} else if message == "Internal Server Error" {
+	} else if message == "Internal server error" {
 		SendInternalServerError(w, r, message)
 		return
 	}

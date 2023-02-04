@@ -28,10 +28,11 @@ func GetRouter() *mux.Router {
 }
 
 func InjectRoutes(router *mux.Router, userRepository repository.UserRepository) {
-	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(controller.GetUser(userRepository)).Methods(http.MethodGet)
-	router.Path("/api/v1/users").Queries("page", "{page}", "size", "{size}").HandlerFunc(controller.GetUsers(userRepository)).Methods(http.MethodGet)
 	router.Path("/api/v1/users").HandlerFunc(controller.CreateUser(userRepository)).Methods(http.MethodPost)
+	router.Path("/api/v1/users").Queries("page", "{page}", "size", "{size}").HandlerFunc(controller.GetUsers(userRepository)).Methods(http.MethodGet)
+	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(controller.GetUser(userRepository)).Methods(http.MethodGet)
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(controller.UpdateUser(userRepository)).Methods(http.MethodPut)
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(controller.DeleteUser(userRepository)).Methods(http.MethodDelete)
 	router.Path("/metrics").Handler(promhttp.Handler()).Methods(http.MethodGet)
+	router.Path("/healthcheck").Handler(controller.Healthcheck()).Methods(http.MethodGet)
 }
