@@ -2,12 +2,18 @@ openapi: 3.0.1
 info:
   title: go-orm-api
   description: go-orm-api
-  version: v1
+  termsOfService: https://blackdevs.com.br
   contact:
     name: Julio Scheidt
     email: julio@blackdevs.com.br
+    url: https://blackdevs.com.br
+  license:
+    name: MIT License
+    url: https://raw.githubusercontent.com/juliocesarscheidt/go-orm-api-clean-arch/main/LICENSE.md
+  version: 0.0.1
+
 servers:
-  - url: http://go-orm-api.{NAMESPACE}.svc.cluster.local:8000/
+  - url: http://go-orm-api.{NAMESPACE}.svc.cluster.local:8000
 
 tags:
   - name: HealthChechServices
@@ -21,6 +27,7 @@ paths:
       tags:
         - HealthChechServices
       summary: get healthcheck
+      description: get healthcheck
       operationId: getHealthcheck
       responses:
         '200':
@@ -50,6 +57,7 @@ paths:
       tags:
         - UserServices
       summary: create user
+      description: create user
       operationId: createUser
       # security:
       #   - BearerAuth: []
@@ -94,6 +102,7 @@ paths:
       tags:
         - UserServices
       summary: list user
+      description: list user
       operationId: listUser
       # security:
       #   - BearerAuth: []
@@ -139,6 +148,7 @@ paths:
       tags:
         - UserServices
       summary: get user
+      description: get user
       operationId: getUser
       # security:
       #   - BearerAuth: []
@@ -185,6 +195,7 @@ paths:
       tags:
         - UserServices
       summary: update user
+      description: update user
       operationId: updateUser
       # security:
       #   - BearerAuth: []
@@ -239,6 +250,7 @@ paths:
       tags:
         - UserServices
       summary: delete user
+      description: delete user
       operationId: deleteUser
       # security:
       #   - BearerAuth: []
@@ -397,11 +409,6 @@ components:
           $ref: '#/components/schemas/UpdatedAt'
         deleted_at:
           $ref: '#/components/schemas/DeletedAt'
-
-    BearerToken:
-      type: string
-      example: >-
-        eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTdmOWFiMzRmMDUwZmM0MTk5Y2Y5MThiIiwibmFtZSI6Imp1bGlvIiwic3VybmFtZSI6ImNlc2FyIiwiZW1haWwiOiJqdWxpb0BtYWlsLmNvbSIsInBob25lIjoiKzU1NDE5OTg4Nzc2NiIsImlhdCI6MTY0NzU2NzkxNiwiZXhwIjoxNjQ3NTcxNTE2LCJhdWQiOiJ1cm46Ym9vay1yZWNvbW1lbmRhdGlvbnM6YXBpLWdhdGV3YXkiLCJpc3MiOiJ1cm46Ym9vay1yZWNvbW1lbmRhdGlvbnM6dXNlcnMtbWljcm9zZXJ2aWNlIn0.Anff7tEPzaqIlpPFgqNNoxKg0CapOxLl6EaI5I3EmR48VyMJYsm3MWhRpXoTpoGoH_cUXu9AVXAY39kueVZP2-eJmq6sHh8awrjlEOh14mx9og_inaOZps8g-tUE0g93LAbPMAnxeMU584Gorg3xaJpe-RsJn5QttWNX2WgqmFJKKZ4v38Bb5w75SzLFQ0G5FiobwNHJmmqV5z4HFqkRyU-6D65sn_LwrS_TgQ8cw73bpHyfQfoDCkngNjGEpzvi6CEvWNkiPLAgHJiwrnJHNVIF1zt0Ltj3DxgRh_R4TEpLpmUTKxBpTjGbSzbuXSGYqdLEy0EFd9CinOyE04h_0Q
 
     CreateUserSuccessResponse:
       type: object
