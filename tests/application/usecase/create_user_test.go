@@ -79,11 +79,3 @@ func TestCreateUserInvalidFields(t *testing.T) {
 		t.Errorf("Expected err to be %v, got %v", expectedErr, err)
 	}
 }
-
-// go vet
-// go test tests/**/**/*_test.go -v
-
-// go test -cover -coverpkg=github.com/juliocesarscheidt/go-orm-api/application/usecase -coverprofile cover.out tests/**/**/*_test.go -v
-// go tool cover -html=cover.out -o coverage.html
-
-// go test tests\application\usecase\create_user_test.go -v
