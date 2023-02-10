@@ -28,6 +28,7 @@ func GetRouter() *mux.Router {
 }
 
 func InjectRoutes(router *mux.Router, userRepository repository.UserRepository) {
+	// create controllers, injecting repositories on them
 	userController := controller.NewUserController(userRepository)
 	healthcheckController := controller.NewHealthcheckController()
 	// user routes
