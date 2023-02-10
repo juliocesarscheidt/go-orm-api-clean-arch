@@ -53,3 +53,12 @@ curl --silent -X GET --url 'http://localhost:8000/healthcheck'
 curl --silent -X GET --url 'http://localhost:8000/metrics'
 curl --silent -X GET --url 'http://localhost:8000/metrics' | grep api_http_request
 ```
+
+## Code coverage
+
+It was used Sonarqube to gather the coverage for unit tests.
+
+Run sonarqube scan:
+```bash
+cd quality-gate && bash run.sh
+```
