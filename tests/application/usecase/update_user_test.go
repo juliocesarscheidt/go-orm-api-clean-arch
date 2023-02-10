@@ -18,8 +18,8 @@ func TestUpdateUserSuccess(t *testing.T) {
 	deleteUserUsecase := usecase.NewDeleteUserUsecase(userRepository)
 	// create a user
 	createUserDto := &dto.CreateUserDto{
-		Name:     "test",
-		Email:    "test@mail.com",
+		Name:     "user",
+		Email:    "user@mail.com",
 		Password: "PASSWORD",
 	}
 	id, err := createUserUsecase.Execute(createUserDto)
@@ -29,7 +29,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 	// update the user
 	updateUserDto := &dto.UpdateUserDto{
 		Id:       id,
-		Name:     "test_updated",
+		Name:     "user changed",
 		Password: "PASSWORD_UPDATED",
 	}
 	if err := updateUserUsecase.Execute(updateUserDto); err != nil {

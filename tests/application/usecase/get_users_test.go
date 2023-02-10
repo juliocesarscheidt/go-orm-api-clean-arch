@@ -28,8 +28,8 @@ func TestGetUsersNonEmptySuccess(t *testing.T) {
 	// create some user
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	createUserDto := &dto.CreateUserDto{
-		Name:     "test",
-		Email:    "test@mail.com",
+		Name:     "user",
+		Email:    "user@mail.com",
 		Password: "PASSWORD",
 	}
 	id, err := createUserUsecase.Execute(createUserDto)

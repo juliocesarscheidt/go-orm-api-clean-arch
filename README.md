@@ -27,8 +27,8 @@ curl --silent -X POST \
   --header 'accept: application/json' \
   --header 'content-type: application/json' \
   --data '{
-	"name": "julio",
-	"email": "julio@mail.com",
+	"name": "user",
+	"email": "user@mail.com",
 	"password": "PASSWORD"
 }'
 
@@ -40,7 +40,7 @@ curl -i --silent -X PUT \
   --url 'http://localhost:8000/api/v1/users/1' \
   --header 'content-type: application/json' \
   --data '{
-	"name": "julio cesar",
+	"name": "user changed",
 	"password": "PASSWORD_CHANGED"
 }'
 

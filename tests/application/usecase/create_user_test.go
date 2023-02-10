@@ -18,8 +18,8 @@ func TestCreateUserSuccess(t *testing.T) {
 	deleteUserUsecase := usecase.NewDeleteUserUsecase(userRepository)
 	// create a user
 	createUserDto := &dto.CreateUserDto{
-		Name:     "test",
-		Email:    "test@mail.com",
+		Name:     "user",
+		Email:    "user@mail.com",
 		Password: "PASSWORD",
 	}
 	id, err := createUserUsecase.Execute(createUserDto)
@@ -52,8 +52,8 @@ func TestCreateUserInvalidPassword(t *testing.T) {
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	// create a user
 	createUserDto := &dto.CreateUserDto{
-		Name:     "test",
-		Email:    "test@mail.com",
+		Name:     "user",
+		Email:    "user@mail.com",
 		Password: "a",
 	}
 	expectedErr := errors.New("Invalid password length")
