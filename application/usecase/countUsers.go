@@ -11,6 +11,12 @@ type CountUsersUsecase struct {
 	PasswordService domainservice.PasswordService
 }
 
+func NewCountUsersUsecase(userRepository repository.UserRepository) *CountUsersUsecase {
+	return &CountUsersUsecase{
+		UserRepository: userRepository,
+	}
+}
+
 func (usecase *CountUsersUsecase) Execute(countUsersDto *dto.CountUsersDto) (int, error) {
 	return usecase.UserRepository.CountUsers()
 }

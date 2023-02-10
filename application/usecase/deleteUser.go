@@ -11,6 +11,12 @@ type DeleteUserUsecase struct {
 	PasswordService domainservice.PasswordService
 }
 
+func NewDeleteUserUsecase(userRepository repository.UserRepository) *DeleteUserUsecase {
+	return &DeleteUserUsecase{
+		UserRepository: userRepository,
+	}
+}
+
 func (usecase *DeleteUserUsecase) Execute(deleteUserDto *dto.DeleteUserDto) error {
 	return usecase.UserRepository.DeleteUser(deleteUserDto.Id)
 }

@@ -12,6 +12,13 @@ type CreateUserUsecase struct {
 	PasswordService domainservice.PasswordService
 }
 
+func NewCreateUserUsecase(userRepository repository.UserRepository, passwordService domainservice.PasswordService) *CreateUserUsecase {
+	return &CreateUserUsecase{
+		UserRepository:  userRepository,
+		PasswordService: passwordService,
+	}
+}
+
 func (usecase *CreateUserUsecase) Execute(createUserDto *dto.CreateUserDto) (int, error) {
 	userBuilder := builder.UserBuilder{PasswordService: usecase.PasswordService}
 	user, err := userBuilder.NewUser(createUserDto.Name, createUserDto.Email, createUserDto.Password)

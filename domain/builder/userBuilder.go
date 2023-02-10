@@ -26,6 +26,7 @@ func (builder UserBuilder) NewUser(name string, email string, password string) (
 		Email:     email,
 		Password:  hashedPassword,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	return user, nil
 }

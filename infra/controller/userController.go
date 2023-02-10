@@ -11,21 +11,56 @@ import (
 	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
-var passwordService *infraservice.PasswordService
-
-func init() {
-	passwordService = &infraservice.PasswordService{}
+type UserController struct {
+	CreateUserUsecase *usecase.CreateUserUsecase
+	GetUserUsecase    *usecase.GetUserUsecase
+	GetUsersUsecase   *usecase.GetUsersUsecase
+	UpdateUserUsecase *usecase.UpdateUserUsecase
+	DeleteUserUsecase *usecase.DeleteUserUsecase
+	CountUsersUsecase *usecase.CountUsersUsecase
 }
 
-func GetUser(userRepository repository.UserRepository) http.HandlerFunc {
+func NewUserController(userRepository repository.UserRepository) *UserController {
+	passwordService := &infraservice.PasswordService{}
+
+	return &UserController{
+		CreateUserUsecase: usecase.NewCreateUserUsecase(userRepository, passwordService),
+		GetUserUsecase:    usecase.NewGetUserUsecase(userRepository),
+		GetUsersUsecase:   usecase.NewGetUsersUsecase(userRepository),
+		UpdateUserUsecase: usecase.NewUpdateUserUsecase(userRepository, passwordService),
+		DeleteUserUsecase: usecase.NewDeleteUserUsecase(userRepository),
+		CountUsersUsecase: usecase.NewCountUsersUsecase(userRepository),
+	}
+}
+
+func (controller UserController) CreateUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		var createUserDto *dto.CreateUserDto
+		if err := json.NewDecoder(r.Body).Decode(&createUserDto); err != nil {
+			HandleError(w, r, err)
+			return
+		}
+
+		id, err := controller.CreateUserUsecase.Execute(createUserDto)
+		if err != nil {
+			HandleError(w, r, err)
+			return
+		}
+
+		SendCreated(w, r, id, nil)
+	}
+}
+
+func (controller UserController) GetUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
 		getUserDto := &dto.GetUserDto{Id: int(id)}
 
-		getUserUsecase := usecase.GetUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
-		user, err := getUserUsecase.Execute(getUserDto)
+		user, err := controller.GetUserUsecase.Execute(getUserDto)
 		if err != nil {
 			HandleError(w, r, err)
 			return
@@ -39,7 +74,7 @@ func GetUser(userRepository repository.UserRepository) http.HandlerFunc {
 	}
 }
 
-func GetUsers(userRepository repository.UserRepository) http.HandlerFunc {
+func (controller UserController) GetUsers() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -47,16 +82,14 @@ func GetUsers(userRepository repository.UserRepository) http.HandlerFunc {
 		size, _ := GetValueFromFormAsInt(r.FormValue, "size")
 		getUsersDto := &dto.GetUsersDto{Page: page, Size: size}
 
-		getUsersUsecase := usecase.GetUsersUsecase{UserRepository: userRepository, PasswordService: passwordService}
-		users, err := getUsersUsecase.Execute(getUsersDto)
+		users, err := controller.GetUsersUsecase.Execute(getUsersDto)
 		if err != nil {
 			HandleError(w, r, err)
 			return
 		}
 
 		countUsersDto := &dto.CountUsersDto{}
-		countUsersUsecase := usecase.CountUsersUsecase{UserRepository: userRepository, PasswordService: passwordService}
-		counter, err := countUsersUsecase.Execute(countUsersDto)
+		counter, err := controller.CountUsersUsecase.Execute(countUsersDto)
 		if err != nil {
 			HandleError(w, r, err)
 			return
@@ -66,28 +99,7 @@ func GetUsers(userRepository repository.UserRepository) http.HandlerFunc {
 	}
 }
 
-func CreateUser(userRepository repository.UserRepository) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		var createUserDto *dto.CreateUserDto
-		if err := json.NewDecoder(r.Body).Decode(&createUserDto); err != nil {
-			HandleError(w, r, err)
-			return
-		}
-
-		createUserUsecase := usecase.CreateUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
-		id, err := createUserUsecase.Execute(createUserDto)
-		if err != nil {
-			HandleError(w, r, err)
-			return
-		}
-
-		SendCreated(w, r, id, nil)
-	}
-}
-
-func UpdateUser(userRepository repository.UserRepository) http.HandlerFunc {
+func (controller UserController) UpdateUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -98,9 +110,7 @@ func UpdateUser(userRepository repository.UserRepository) http.HandlerFunc {
 		}
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
 		updateUserDto.Id = int(id)
-
-		updateUserUsecase := usecase.UpdateUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
-		if err := updateUserUsecase.Execute(updateUserDto); err != nil {
+		if err := controller.UpdateUserUsecase.Execute(updateUserDto); err != nil {
 			HandleError(w, r, err)
 			return
 		}
@@ -109,15 +119,13 @@ func UpdateUser(userRepository repository.UserRepository) http.HandlerFunc {
 	}
 }
 
-func DeleteUser(userRepository repository.UserRepository) http.HandlerFunc {
+func (controller UserController) DeleteUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		id, _ := GetValueFromParamsAsInt(mux.Vars(r), "id")
 		deleteUserDto := &dto.DeleteUserDto{Id: id}
-
-		deleteUserUsecase := usecase.DeleteUserUsecase{UserRepository: userRepository, PasswordService: passwordService}
-		if err := deleteUserUsecase.Execute(deleteUserDto); err != nil {
+		if err := controller.DeleteUserUsecase.Execute(deleteUserDto); err != nil {
 			HandleError(w, r, err)
 			return
 		}

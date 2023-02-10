@@ -12,6 +12,13 @@ type UpdateUserUsecase struct {
 	PasswordService domainservice.PasswordService
 }
 
+func NewUpdateUserUsecase(userRepository repository.UserRepository, passwordService domainservice.PasswordService) *UpdateUserUsecase {
+	return &UpdateUserUsecase{
+		UserRepository:  userRepository,
+		PasswordService: passwordService,
+	}
+}
+
 func (usecase *UpdateUserUsecase) Execute(updateUserDto *dto.UpdateUserDto) error {
 	userBuilder := builder.UserBuilder{PasswordService: usecase.PasswordService}
 	user, err := userBuilder.AlterUser(updateUserDto.Name, updateUserDto.Password)

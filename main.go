@@ -19,12 +19,15 @@ func main() {
 	db, _ := gorm.Open(mysql.Open(connectionString), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: false,
 	})
+	// db, _ := gorm.Open(sqlite.Open("go_orm_api.db"), &gorm.Config{})
 	if err := db.AutoMigrate(&entity.User{}); err != nil {
 		utils.Logger.Errorf("Err %v", err)
 	}
 
 	// create repositories
-	userRepository := repository.UserRepository{Db: db}
+	// userRepository := repository.UserRepositoryDatabase{Db: db}
+	userRepository := repository.UserRepositoryMemory{}
+
 	// create router and its routes
 	r := router.GetRouter()
 	router.InjectRoutes(r, userRepository)
@@ -32,9 +35,9 @@ func main() {
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         "0.0.0.0:8000",
-		WriteTimeout: 60 * time.Second,
-		ReadTimeout:  60 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+		IdleTimeout:  15 * time.Second,
 	}
 
 	utils.Logger.Info("Server listening on 0.0.0.0:8000")
