@@ -15,6 +15,7 @@ func TestCreateUserSuccess(t *testing.T) {
 	userRepository := repository.UserRepositoryMemory{}
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	getUserUsecase := usecase.NewGetUserUsecase(userRepository)
+	deleteUserUsecase := usecase.NewDeleteUserUsecase(userRepository)
 	// create a user
 	createUserDto := &dto.CreateUserDto{
 		Name:     "test",
@@ -39,6 +40,11 @@ func TestCreateUserSuccess(t *testing.T) {
 	}
 	if user.Email != createUserDto.Email {
 		t.Errorf("Expected user email to match the DTO email, got %v", user.Email)
+	}
+	// remove created user
+	deleteUserDto := &dto.DeleteUserDto{Id: id}
+	if err := deleteUserUsecase.Execute(deleteUserDto); err != nil {
+		t.Errorf("Expected err to be nil, got %v", err)
 	}
 }
 
