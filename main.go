@@ -25,8 +25,8 @@ func main() {
 	}
 
 	// create repositories
-	// userRepository := repository.UserRepositoryDatabase{Db: db}
-	userRepository := repository.UserRepositoryMemory{}
+	userRepository := repository.UserRepositoryDatabase{Db: db}
+	// userRepository := repository.UserRepositoryMemory{}
 
 	// create router and its routes
 	r := router.GetRouter()
