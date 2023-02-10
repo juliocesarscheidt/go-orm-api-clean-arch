@@ -5,13 +5,12 @@ import (
 	"net/http"
 	"time"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-
 	"github.com/juliocesarscheidt/go-orm-api/domain/entity"
 	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
 	"github.com/juliocesarscheidt/go-orm-api/infra/router"
 	"github.com/juliocesarscheidt/go-orm-api/shared/utils"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func main() {

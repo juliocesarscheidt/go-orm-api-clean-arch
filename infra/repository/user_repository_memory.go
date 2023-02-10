@@ -19,16 +19,14 @@ func (userRepository UserRepositoryMemory) GetUsers(page, size int) ([]*entity.U
 	if startIndex >= len(users) {
 		return nil, nil
 
-	} else if startIndex < len(users) && size > len(users) {
-		usersSlice := users[startIndex:]
-		return usersSlice, nil
+	} else {
+		if len(users) < endIndex && startIndex == 0 {
+			return users, nil
 
-	} else if len(users) < endIndex && startIndex == 0 {
-		return users, nil
-
-	} else if len(users) < endIndex && startIndex < len(users) {
-		usersSlice := users[startIndex:]
-		return usersSlice, nil
+		} else if size > len(users) || len(users) < endIndex {
+			usersSlice := users[startIndex:]
+			return usersSlice, nil
+		}
 	}
 
 	usersSlice := users[startIndex:endIndex]

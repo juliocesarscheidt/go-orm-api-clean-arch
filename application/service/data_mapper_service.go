@@ -10,8 +10,8 @@ func MapUserToDto(user *entity.User) *dto.UserViewDto {
 		Id:        user.Id,
 		Name:      user.Name,
 		Email:     user.Email,
-		CreatedAt: FormatTimeToRFC(user.CreatedAt),
-		UpdatedAt: FormatTimeToRFC(user.UpdatedAt),
-		DeletedAt: FormatTimeToRFC(user.DeletedAt.Time),
+		CreatedAt: FormatTimeToRFCRFC3339(user.CreatedAt),
+		UpdatedAt: FormatTimeToRFCRFC3339(user.UpdatedAt),
+		DeletedAt: FormatTimeToRFCRFC3339(user.DeletedAt.Time),
 	}
 }

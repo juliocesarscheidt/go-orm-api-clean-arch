@@ -4,7 +4,9 @@ import (
 	"net/http"
 )
 
+// using pseudo heritage to BaseController
 type HealthcheckController struct {
+	BaseController
 }
 
 func NewHealthcheckController() *HealthcheckController {
@@ -14,11 +16,11 @@ func NewHealthcheckController() *HealthcheckController {
 func (controller HealthcheckController) CheckHealth() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-
-		SendOk(w, r, struct {
-			status string
+		response := struct {
+			Status string `json:"status"`
 		}{
-			status: "Healthy",
-		}, nil)
+			Status: "Healthy",
+		}
+		controller.SendOk(w, r, response, nil)
 	}
 }

@@ -27,7 +27,7 @@ func init() {
 	prometheus.MustRegister(EndpointDurationMetrics)
 }
 
-func PutPrometheusMetrics(path, method, status string) {
+func PutEndpointMetrics(path, method, status string) {
 	defer func() {
 		EndpointCounterMetrics.WithLabelValues(status, method, path).Inc()
 	}()

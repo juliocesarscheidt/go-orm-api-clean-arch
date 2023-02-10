@@ -39,5 +39,5 @@ func InjectRoutes(router *mux.Router, userRepository repository.UserRepository) 
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(userController.DeleteUser()).Methods(http.MethodDelete)
 	// crosscutting routes
 	router.Path("/metrics").Handler(promhttp.Handler()).Methods(http.MethodGet)
-	router.Path("/healthcheck").Handler(healthcheckController.CheckHealth()).Methods(http.MethodGet)
+	router.Path("/healthcheck").HandlerFunc(healthcheckController.CheckHealth()).Methods(http.MethodGet)
 }
