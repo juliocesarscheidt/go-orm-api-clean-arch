@@ -13,7 +13,7 @@ type UserBuilder struct {
 }
 
 func (builder UserBuilder) NewUser(name string, email string, password string) (*entity.User, error) {
-	err := entity.ValidateUserFields(map[string]string{"name": name, "email": email, "password": password})
+	err := entity.ValidateUserFields(map[string]string{"email": email, "name": name, "password": password})
 	if err != nil {
 		return nil, err
 	}

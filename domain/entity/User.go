@@ -3,6 +3,7 @@ package entity
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -28,6 +29,7 @@ func ValidateUserFields(fields map[string]string) error {
 		}
 	}
 	if len(errorMessages) > 0 {
+		sort.Strings(errorMessages)
 		return errors.New(strings.Join(errorMessages, ", "))
 	}
 	return nil
