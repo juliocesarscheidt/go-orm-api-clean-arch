@@ -8,21 +8,19 @@ export SRC_PATH="${PWD}/../"
 # sysctl vm.max_map_count
 
 ########################### sonarqube ###########################
-docker container run --rm -d \
+docker container run --rm \
   --name sonarqube \
   --network bridge \
   -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE='true' \
-  -e SONAR_CE_JAVAOPTS='-Xmx512m -Xms512m -XX:MaxDirectMemorySize=256m -XX:+HeapDumpOnOutOfMemoryError' \
   -p 9000:9000 \
   --memory='512MB' --cpus='0.5' \
-  --volume sonarqube_conf:/opt/sonarqube/conf \
-  --volume sonarqube_data:/opt/sonarqube/data \
-  --volume sonarqube_extensions:/opt/sonarqube/extensions \
-  sonarqube:lts 2> /dev/null
+  sonarqube:lts sh 2> /dev/null
 
 # ./docker/entrypoint.sh
-# /opt/java/openjdk/bin/java -jar lib/sonarqube.jar -Dsonar.log.console=true
-# sonar.search.javaOpts=-Xmx512m -Xms512m -XX:MaxDirectMemorySize=256m -XX:+HeapDumpOnOutOfMemoryError
+# /opt/java/openjdk/bin/java -jar lib/sonarqube.jar \
+#   -Dsonar.log.console=true -Dsonar.search.javaOpts='-Xmx512m -Xms512m -XX:MaxDirectMemorySize=256m -XX:+HeapDumpOnOutOfMemoryError' \
+#   -Dsonar.search.javaAdditionalOpts='-Dnode.store.allow_mmapfs=false' \
+#   -Ddiscovery.type='single-node'
 
 export SONARQUBE_URL='127.0.0.1:9000'
 until [ "$(curl --silent -X GET "http://${SONARQUBE_URL}/api/system/status" 2> /dev/null | jq -r '.status')" == "UP" ]; do
