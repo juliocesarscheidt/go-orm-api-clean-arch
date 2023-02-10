@@ -58,6 +58,8 @@ curl --silent -X GET --url 'http://localhost:8000/metrics' | grep api_http_reque
 
 It was used Sonarqube to gather the coverage for unit tests.
 
+![Quality Gate](./quality-gate/sonarqube.png)
+
 Run sonarqube scan:
 ```bash
 cd quality-gate && bash run.sh

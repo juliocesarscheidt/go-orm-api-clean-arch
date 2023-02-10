@@ -22,15 +22,11 @@ func main() {
 	if err := db.AutoMigrate(&entity.User{}); err != nil {
 		utils.Logger.Errorf("Err %v", err)
 	}
-
 	// create repositories
 	userRepository := repository.UserRepositoryDatabase{Db: db}
-	// userRepository := repository.UserRepositoryMemory{}
-
 	// create router and its routes
 	r := router.GetRouter()
 	router.InjectRoutes(r, userRepository)
-
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         "0.0.0.0:8000",
@@ -38,7 +34,6 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 		IdleTimeout:  15 * time.Second,
 	}
-
 	utils.Logger.Info("Server listening on 0.0.0.0:8000")
 	log.Fatal(srv.ListenAndServe())
 }
