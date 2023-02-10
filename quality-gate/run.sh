@@ -2,18 +2,27 @@
 
 export SRC_PATH="${PWD}/../"
 
+#  max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+# echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+# sysctl -p
+# sysctl vm.max_map_count
+
 ########################### sonarqube ###########################
 docker container run --rm -d \
   --name sonarqube \
   --network bridge \
   -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE='true' \
-  -e SONAR_CE_JAVAOPTS='-Xmx2G -Xms2G' \
+  -e SONAR_CE_JAVAOPTS='-Xmx512m -Xms512m -XX:MaxDirectMemorySize=256m -XX:+HeapDumpOnOutOfMemoryError' \
   -p 9000:9000 \
-  --memory='4096MB' --cpus='0.5' \
+  --memory='512MB' --cpus='0.5' \
   --volume sonarqube_conf:/opt/sonarqube/conf \
   --volume sonarqube_data:/opt/sonarqube/data \
   --volume sonarqube_extensions:/opt/sonarqube/extensions \
   sonarqube:lts 2> /dev/null
+
+# ./docker/entrypoint.sh
+# /opt/java/openjdk/bin/java -jar lib/sonarqube.jar -Dsonar.log.console=true
+# sonar.search.javaOpts=-Xmx512m -Xms512m -XX:MaxDirectMemorySize=256m -XX:+HeapDumpOnOutOfMemoryError
 
 export SONARQUBE_URL='127.0.0.1:9000'
 until [ "$(curl --silent -X GET "http://${SONARQUBE_URL}/api/system/status" 2> /dev/null | jq -r '.status')" == "UP" ]; do
