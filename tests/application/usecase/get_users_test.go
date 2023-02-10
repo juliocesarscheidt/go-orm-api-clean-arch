@@ -48,10 +48,14 @@ func TestGetUsersNonEmptySuccess(t *testing.T) {
 	if len(users) != 1 {
 		t.Errorf("Expected user to have length of 1, got %v", len(users))
 	}
-	// remove created user
-	deleteUserUsecase := usecase.NewDeleteUserUsecase(userRepository)
-	if err := deleteUserUsecase.Execute(&dto.DeleteUserDto{Id: id}); err != nil {
+	// check the count of users
+	countUsersUsecase := usecase.NewCountUsersUsecase(userRepository)
+	counter, err := countUsersUsecase.Execute(&dto.CountUsersDto{})
+	if err != nil {
 		t.Errorf("Expected err to be nil, got %v", err)
+	}
+	if counter != 1 {
+		t.Errorf("Expected counter to be 1, got %v", counter)
 	}
 	// retrieve users of page 1 (it should not return anything)
 	users, _ = getUsersUsecase.Execute(&dto.GetUsersDto{Page: 1, Size: 10})
@@ -60,6 +64,11 @@ func TestGetUsersNonEmptySuccess(t *testing.T) {
 	}
 	if len(users) != 0 {
 		t.Errorf("Expected user to have length of 0, got %v", len(users))
+	}
+	// remove created user
+	deleteUserUsecase := usecase.NewDeleteUserUsecase(userRepository)
+	if err := deleteUserUsecase.Execute(&dto.DeleteUserDto{Id: id}); err != nil {
+		t.Errorf("Expected err to be nil, got %v", err)
 	}
 }
 

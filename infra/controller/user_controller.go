@@ -89,8 +89,7 @@ func (controller UserController) GetUsers() http.HandlerFunc {
 			return
 		}
 
-		countUsersDto := &dto.CountUsersDto{}
-		counter, err := controller.CountUsersUsecase.Execute(countUsersDto)
+		counter, err := controller.CountUsersUsecase.Execute(&dto.CountUsersDto{})
 		if err != nil {
 			controller.HandleError(w, r, err)
 			return
