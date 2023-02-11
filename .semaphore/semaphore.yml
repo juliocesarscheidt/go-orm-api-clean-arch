@@ -13,16 +13,33 @@ blocks:
             - checkout
             - docker image build --tag juliocesarmidia/go-orm-api-test:latest -f test.Dockerfile .
             - docker container run --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
-  - name: Build and Push
+
+  - name: Build Image
     task:
       jobs:
-        - name: Run Build and Push Image
+        - name: Run Build Image
+          commands:
+            - checkout
+            - docker image build --tag "juliocesarmidia/go-orm-api:latest" -f Dockerfile --cache-from=juliocesarmidia/go-orm-api-test:latest .
+
+  - name: Check Vulnerabilities on Image
+    task:
+      jobs:
+        - name: Run Trivy
+          commands:
+            - wget https://github.com/aquasecurity/trivy/releases/download/v0.37.1/trivy_0.37.1_Linux-64bit.deb
+            - sudo dpkg -i trivy_0.37.1_Linux-64bit.deb
+            - trivy image --exit-code 1 --severity CRITICAL --quiet --light "juliocesarmidia/go-orm-api:latest"
+
+  - name: Push Image
+    task:
+      jobs:
+        - name: Run Push Image
           commands:
             - checkout
             - SHORT_SHA=$(echo "$SEMAPHORE_GIT_SHA" | cut -c1-7)
+            - docker image tag "juliocesarmidia/go-orm-api:latest" "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SHORT_SHA"
             - echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
-            - docker image build --tag "juliocesarmidia/go-orm-api:$SHORT_SHA" -f Dockerfile --cache-from=juliocesarmidia/go-orm-api-test:latest .
-            - docker image tag "juliocesarmidia/go-orm-api:$SHORT_SHA" "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SHORT_SHA"
             - docker image push "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SHORT_SHA"
       secrets:
         - name: docker-hub
