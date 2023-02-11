@@ -13,9 +13,9 @@ RUN GOOS=linux GOARCH=amd64 GO111MODULE=on CGO_ENABLED=0 \
 FROM gcr.io/distroless/static:nonroot
 
 LABEL maintainer="Julio Cesar <julio@blackdevs.com.br>"
-LABEL org.opencontainers.image.source https://github.com/juliocesarscheidt/go-orm-api-clean-arch
+LABEL org.opencontainers.image.source "https://github.com/juliocesarscheidt/go-orm-api-clean-arch"
 LABEL org.opencontainers.image.description "Simple Go API implementing clean architecture, using Mux, Go ORM and Prometheus"
-LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.licenses "MIT"
 
 WORKDIR /
 COPY --from=builder /go/src/app/main .
