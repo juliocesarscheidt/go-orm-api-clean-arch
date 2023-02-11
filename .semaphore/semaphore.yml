@@ -6,6 +6,7 @@ agent:
     os_image: ubuntu2004
 blocks:
   - name: Unit_Tests
+    dependencies: []
     task:
       jobs:
         - name: Run_Unit_Tests
@@ -13,21 +14,19 @@ blocks:
             - checkout
             - docker image build --tag juliocesarmidia/go-orm-api-test:latest -f test.Dockerfile .
             - docker container run --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
-  - name: Build_Image_and_Check_Vulnerabilities
+  - name: Check_Vulnerabilities
+    dependencies: ["Unit_Tests"]
     task:
       jobs:
-        - name: Run_Build_Image
+        - name: Run_Check_Vulnerabilities
           commands:
             - checkout
             - docker image build --tag "juliocesarmidia/go-orm-api:latest" -f Dockerfile --cache-from=juliocesarmidia/go-orm-api-test:latest .
-        - name: Run_Check_Vulnerabilities_on_Image
-          dependencies: ["Run_Build_Image"]
-          commands:
-            - checkout
             - wget https://github.com/aquasecurity/trivy/releases/download/v0.37.1/trivy_0.37.1_Linux-64bit.deb
             - sudo dpkg -i trivy_0.37.1_Linux-64bit.deb
             - trivy image --exit-code 1 --severity CRITICAL --quiet --light "juliocesarmidia/go-orm-api:latest"
   - name: Push_Image
+    dependencies: ["Check_Vulnerabilities"]
     task:
       jobs:
         - name: Run_Push_Image
