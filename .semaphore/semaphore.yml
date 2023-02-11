@@ -1,0 +1,30 @@
+version: v1.0
+name: Docker
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: Run Tests
+    task:
+      jobs:
+        - name: Store Docker image in Registry
+          commands:
+            - checkout
+            - 'docker image build --tag juliocesarmidia/go-orm-api-test:latest -f test.Dockerfile .'
+            - 'docker container run --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest'
+      secrets:
+        - name: docker-hub
+  - name: Build and Push
+    task:
+      jobs:
+        - name: Use restored Docker image as cache
+          commands:
+            - checkout
+            - docker images
+            - echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
+            - 'docker image build --tag "juliocesarmidia/go-orm-api:$SEMAPHORE_GIT_SHA" -f Dockerfile --cache-from=juliocesarmidia/go-orm-api-test:latest .'
+            - 'docker image tag "juliocesarmidia/go-orm-api:$SEMAPHORE_GIT_SHA" "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SEMAPHORE_GIT_SHA"'
+            - 'docker image push "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SEMAPHORE_GIT_SHA"'
+      secrets:
+        - name: docker-hub
