@@ -3,9 +3,11 @@
 #### With Docker
 
 ```bash
-docker image build --tag juliocesarmidia/go-orm-api-test:latest -f test.Dockerfile .
+docker image build \
+  --tag juliocesarmidia/go-orm-api-test:latest -f test.Dockerfile .
 
-docker container run --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
+docker container run \
+  --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
 ```
 
 #### With go CLI

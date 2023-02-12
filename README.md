@@ -5,9 +5,9 @@
 
 ```bash
 docker-compose up -d mysql
-docker-compose logs -f --tail 100 mysql
-
 docker-compose up -d --build go-orm-api
+
+docker-compose logs -f --tail 100 mysql
 docker-compose logs -f --tail 100 go-orm-api
 ```
 

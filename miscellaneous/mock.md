@@ -11,7 +11,9 @@
 curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 
 # run proxy
-prism proxy $(pwd)/openapi.yaml http://localhost:8000 -h 0.0.0.0 --errors
+prism proxy "$(pwd)/openapi.yaml" http://localhost:8000 -h 0.0.0.0 --errors
+# run mock
+prism mock -h 0.0.0.0 "$(pwd)/openapi.yaml"
 ```
 
 ## Running with Docker

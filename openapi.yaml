@@ -59,8 +59,6 @@ paths:
       summary: create user
       description: create user
       operationId: createUser
-      # security:
-      #   - BearerAuth: []
       requestBody:
         content:
           application/json:
@@ -104,8 +102,6 @@ paths:
       summary: list user
       description: list user
       operationId: listUser
-      # security:
-      #   - BearerAuth: []
       parameters:
         - name: page
           in: query
@@ -150,8 +146,6 @@ paths:
       summary: get user
       description: get user
       operationId: getUser
-      # security:
-      #   - BearerAuth: []
       parameters:
       - name: id
         in: path
@@ -197,8 +191,6 @@ paths:
       summary: update user
       description: update user
       operationId: updateUser
-      # security:
-      #   - BearerAuth: []
       parameters:
       - name: id
         in: path
@@ -252,8 +244,6 @@ paths:
       summary: delete user
       description: delete user
       operationId: deleteUser
-      # security:
-      #   - BearerAuth: []
       parameters:
       - name: id
         in: path

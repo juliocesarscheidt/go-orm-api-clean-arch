@@ -18,7 +18,6 @@ func main() {
 	db, _ := gorm.Open(mysql.Open(connectionString), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: false,
 	})
-	// db, _ := gorm.Open(sqlite.Open("go_orm_api.db"), &gorm.Config{})
 	if err := db.AutoMigrate(&entity.User{}); err != nil {
 		utils.Logger.Errorf("Err %v", err)
 	}

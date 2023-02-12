@@ -14,7 +14,7 @@ var lastUserId = 0
 
 func (userRepository UserRepositoryMemory) GetUsers(page, size int) ([]*entity.User, error) {
 	startIndex := page * size
-	endIndex := page*size + size
+	endIndex := startIndex + size
 
 	if startIndex >= len(users) {
 		return nil, nil
