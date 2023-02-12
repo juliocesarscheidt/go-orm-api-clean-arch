@@ -4,15 +4,18 @@
 
 ```bash
 docker image build \
-  --tag juliocesarmidia/go-orm-api-test:latest -f test.Dockerfile .
+  --tag juliocesarmidia/go-orm-api-test:latest \
+  -f ./src/test.Dockerfile ./src
 
-docker container run \
-  --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
+docker container run --rm \
+  --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
 ```
 
 #### With go CLI
 
 ```bash
+cd ./src
+
 go vet
 go test tests/**/**/*_test.go -v
 

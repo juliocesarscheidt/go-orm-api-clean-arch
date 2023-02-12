@@ -40,9 +40,7 @@ services:
     hostname: go-orm-api
     image: juliocesarmidia/go-orm-api:latest
     build:
-      context: ./
-      cache_from:
-        - juliocesarmidia/go-orm-api:latest
+      context: ./src
     ports:
       - 8000:8000
     environment:

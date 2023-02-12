@@ -51,14 +51,14 @@ function scan_project() {
   local PROJECT_KEY="$1"
   cd "${SRC_PATH}"
   # generating coverage file
-  docker image build --tag "juliocesarmidia/go-orm-api-test:latest" -f test.Dockerfile .
+  docker image build --tag juliocesarmidia/go-orm-api-test:latest -f ./src/test.Dockerfile ./src
   docker container run --rm \
     --name go-orm-api-test \
     -e PROJECT_KEY \
-    -v "${PWD}:/go/src/app" \
+    -v "${PWD}/src:/go/src/app" \
     juliocesarmidia/go-orm-api-test:latest \
     sh -c "go test -cover -coverpkg=\"github.com/juliocesarscheidt/${PROJECT_KEY}/application/usecase\" -coverprofile cover.out tests/**/**/*_test.go -v"
-  cat "${PWD}/cover.out"
+  cat "${PWD}/src/cover.out"
   # running sonarqube scanner
   docker container run --rm \
     --name sonarscanner \
@@ -66,7 +66,7 @@ function scan_project() {
     -e SONAR_HOST_URL="http://${SONARQUBE_URL}" \
     -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${PROJECT_KEY}" \
     -e SONAR_LOGIN="${TOKEN}" \
-    -v "${PWD}:/usr/src" \
+    -v "${PWD}/src:/usr/src" \
     -v sonar-cache:/opt/sonar-scanner/.sonar/cache \
     -w /usr/src \
     sonarsource/sonar-scanner-cli:4
