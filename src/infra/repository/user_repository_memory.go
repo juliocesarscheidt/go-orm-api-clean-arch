@@ -10,7 +10,7 @@ type UserRepositoryMemory struct {
 }
 
 var users []*entity.User
-var lastUserId = 0
+var lastInsertedId = 0
 
 func (userRepository UserRepositoryMemory) GetUsers(page, size int) ([]*entity.User, error) {
 	startIndex := page * size
@@ -18,15 +18,12 @@ func (userRepository UserRepositoryMemory) GetUsers(page, size int) ([]*entity.U
 
 	if startIndex >= len(users) {
 		return nil, nil
-
-	} else {
-		if len(users) < endIndex && startIndex == 0 {
-			return users, nil
-
-		} else if size > len(users) || len(users) < endIndex {
-			usersSlice := users[startIndex:]
-			return usersSlice, nil
-		}
+	}
+	if len(users) < endIndex && startIndex == 0 {
+		return users, nil
+	} else if size > len(users) || len(users) < endIndex {
+		usersSlice := users[startIndex:]
+		return usersSlice, nil
 	}
 
 	usersSlice := users[startIndex:endIndex]
@@ -43,8 +40,8 @@ func (userRepository UserRepositoryMemory) GetUser(id int) (*entity.User, error)
 }
 
 func (userRepository UserRepositoryMemory) CreateUser(user *entity.User) (int, error) {
-	lastUserId = lastUserId + 1
-	user.Id = lastUserId
+	lastInsertedId = lastInsertedId + 1
+	user.Id = lastInsertedId
 	users = append(users, user)
 	return user.Id, nil
 }
