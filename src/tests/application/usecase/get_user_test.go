@@ -5,12 +5,14 @@ import (
 
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
+	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
 )
 
 func TestGetUserSuccess(t *testing.T) {
 	userRepository := repository.UserRepositoryMemory{}
-	getUserUsecase := usecase.NewGetUserUsecase(userRepository)
+	userPresenter := &infrapresenter.UserPresenter{}
+	getUserUsecase := usecase.NewGetUserUsecase(userRepository, userPresenter)
 	// retrieve an unexisting user
 	getUserDto := &dto.GetUserDto{Id: 1}
 	user, err := getUserUsecase.Execute(getUserDto)

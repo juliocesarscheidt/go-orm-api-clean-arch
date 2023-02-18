@@ -2,17 +2,19 @@ package usecase
 
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
-	applicationservice "github.com/juliocesarscheidt/go-orm-api/application/service"
+	applicationpresenter "github.com/juliocesarscheidt/go-orm-api/application/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
 )
 
 type GetUsersUsecase struct {
 	UserRepository repository.UserRepository
+	UserPresenter  applicationpresenter.UserPresenter
 }
 
-func NewGetUsersUsecase(userRepository repository.UserRepository) *GetUsersUsecase {
+func NewGetUsersUsecase(userRepository repository.UserRepository, userPresenter applicationpresenter.UserPresenter) *GetUsersUsecase {
 	return &GetUsersUsecase{
 		UserRepository: userRepository,
+		UserPresenter:  userPresenter,
 	}
 }
 
@@ -21,11 +23,5 @@ func (usecase *GetUsersUsecase) Execute(getUsersDto *dto.GetUsersDto) ([]*dto.Us
 	if err != nil {
 		return nil, err
 	}
-	var usersDto []*dto.UserViewDto
-	for _, user := range users {
-		usersDto = append(usersDto, applicationservice.MapUserToDto(user))
-	}
-	// free memory space
-	users = nil
-	return usersDto, nil
+	return usecase.UserPresenter.MapCollection(users), nil
 }

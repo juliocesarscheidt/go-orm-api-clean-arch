@@ -5,16 +5,18 @@ import (
 
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
+	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
 	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
 func TestUpdateUserSuccess(t *testing.T) {
 	passwordService := &infraservice.PasswordService{}
+	userPresenter := &infrapresenter.UserPresenter{}
 	userRepository := repository.UserRepositoryMemory{}
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	updateUserUsecase := usecase.NewUpdateUserUsecase(userRepository, passwordService)
-	getUserUsecase := usecase.NewGetUserUsecase(userRepository)
+	getUserUsecase := usecase.NewGetUserUsecase(userRepository, userPresenter)
 	deleteUserUsecase := usecase.NewDeleteUserUsecase(userRepository)
 	// create a user
 	createUserDto := &dto.CreateUserDto{

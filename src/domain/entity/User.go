@@ -32,5 +32,24 @@ func ValidateUserFields(fields map[string]string) error {
 		sort.Strings(errorMessages)
 		return errors.New(strings.Join(errorMessages, ", "))
 	}
+	if len(fields["password"]) < 8 || len(fields["password"]) > 50 {
+		return errors.New("Invalid password length")
+	}
 	return nil
+}
+
+func NewUser(name, email, password string) *User {
+	return &User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+}
+
+func (user *User) UpdateUser(name, password string) {
+	user.Name = name
+	user.Password = password
+	user.UpdatedAt = time.Now()
 }

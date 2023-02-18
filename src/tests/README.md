@@ -17,7 +17,9 @@ docker container run --rm \
 cd ./src
 
 go vet
+
 go test tests/**/**/*_test.go -v
+go test -race tests/**/**/*_test.go -v
 
 go test -cover \
   -coverpkg=github.com/juliocesarscheidt/go-orm-api/application/usecase \

@@ -51,7 +51,9 @@ function scan_project() {
   local PROJECT_KEY="$1"
   cd "${SRC_PATH}"
   # generating coverage file
-  docker image build --tag juliocesarmidia/go-orm-api-test:latest -f ./src/test.Dockerfile ./src
+  docker image build \
+    --tag juliocesarmidia/go-orm-api-test:latest \
+    -f ./src/test.Dockerfile ./src
   docker container run --rm \
     --name go-orm-api-test \
     -e PROJECT_KEY \

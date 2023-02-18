@@ -8,6 +8,7 @@ import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
@@ -24,10 +25,11 @@ type UserController struct {
 
 func NewUserController(userRepository repository.UserRepository) *UserController {
 	passwordService := &infraservice.PasswordService{}
+	userPresenter := &infrapresenter.UserPresenter{}
 	return &UserController{
 		CreateUserUsecase: usecase.NewCreateUserUsecase(userRepository, passwordService),
-		GetUserUsecase:    usecase.NewGetUserUsecase(userRepository),
-		GetUsersUsecase:   usecase.NewGetUsersUsecase(userRepository),
+		GetUserUsecase:    usecase.NewGetUserUsecase(userRepository, userPresenter),
+		GetUsersUsecase:   usecase.NewGetUsersUsecase(userRepository, userPresenter),
 		UpdateUserUsecase: usecase.NewUpdateUserUsecase(userRepository, passwordService),
 		DeleteUserUsecase: usecase.NewDeleteUserUsecase(userRepository),
 		CountUsersUsecase: usecase.NewCountUsersUsecase(userRepository),

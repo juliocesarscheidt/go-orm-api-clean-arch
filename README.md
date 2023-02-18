@@ -36,7 +36,7 @@ curl --silent -X GET --url 'http://localhost:8000/api/v1/users?page=0&size=10'
 
 curl --silent -X GET --url 'http://localhost:8000/api/v1/users/1'
 
-curl -i --silent -X PUT \
+curl -i --silent -X PATCH \
   --url 'http://localhost:8000/api/v1/users/1' \
   --header 'content-type: application/json' \
   --data '{

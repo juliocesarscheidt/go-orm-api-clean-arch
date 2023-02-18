@@ -185,7 +185,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DefaultResponseServerError'
 
-    put:
+    patch:
       tags:
         - UserServices
       summary: update user

@@ -26,6 +26,9 @@ func (userRepository UserRepositoryDatabase) GetUser(id int) (*entity.User, erro
 	if result.RowsAffected == 0 {
 		return nil, errors.New("Not found")
 	}
+	if user == nil {
+		return nil, errors.New("Not found")
+	}
 	return user, nil
 }
 

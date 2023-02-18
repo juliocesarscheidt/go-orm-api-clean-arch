@@ -5,13 +5,15 @@ import (
 
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
+	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
 	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
 func TestGetUsersEmptySuccess(t *testing.T) {
 	userRepository := repository.UserRepositoryMemory{}
-	getUsersUsecase := usecase.NewGetUsersUsecase(userRepository)
+	userPresenter := &infrapresenter.UserPresenter{}
+	getUsersUsecase := usecase.NewGetUsersUsecase(userRepository, userPresenter)
 	getUsersDto := &dto.GetUsersDto{Page: 0, Size: 1}
 	users, err := getUsersUsecase.Execute(getUsersDto)
 	if err != nil {
@@ -24,6 +26,7 @@ func TestGetUsersEmptySuccess(t *testing.T) {
 
 func TestGetUsersNonEmptySuccess(t *testing.T) {
 	passwordService := &infraservice.PasswordService{}
+	userPresenter := &infrapresenter.UserPresenter{}
 	userRepository := repository.UserRepositoryMemory{}
 	// create some user
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
@@ -37,7 +40,7 @@ func TestGetUsersNonEmptySuccess(t *testing.T) {
 		t.Errorf("Expected err to be nil, got %v", err)
 	}
 	// retrieve users of page 0 (it should return the user)
-	getUsersUsecase := usecase.NewGetUsersUsecase(userRepository)
+	getUsersUsecase := usecase.NewGetUsersUsecase(userRepository, userPresenter)
 	users, err := getUsersUsecase.Execute(&dto.GetUsersDto{Page: 0, Size: 10})
 	if err != nil {
 		t.Errorf("Expected err to be nil, got %v", err)

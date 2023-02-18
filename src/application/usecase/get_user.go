@@ -2,17 +2,19 @@ package usecase
 
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
-	applicationservice "github.com/juliocesarscheidt/go-orm-api/application/service"
+	applicationpresenter "github.com/juliocesarscheidt/go-orm-api/application/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
 )
 
 type GetUserUsecase struct {
 	UserRepository repository.UserRepository
+	UserPresenter  applicationpresenter.UserPresenter
 }
 
-func NewGetUserUsecase(userRepository repository.UserRepository) *GetUserUsecase {
+func NewGetUserUsecase(userRepository repository.UserRepository, userPresenter applicationpresenter.UserPresenter) *GetUserUsecase {
 	return &GetUserUsecase{
 		UserRepository: userRepository,
+		UserPresenter:  userPresenter,
 	}
 }
 
@@ -21,8 +23,5 @@ func (usecase *GetUserUsecase) Execute(getUserDto *dto.GetUserDto) (*dto.UserVie
 	if err != nil {
 		return nil, err
 	}
-	if user == nil {
-		return nil, nil
-	}
-	return applicationservice.MapUserToDto(user), nil
+	return usecase.UserPresenter.Map(user), nil
 }
