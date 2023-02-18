@@ -7,5 +7,10 @@ RUN go mod download
 
 COPY ./ ./
 
+ENV GOOS=linux
+ENV GOARCH=amd64
+ENV GO111MODULE=on
+ENV CGO_ENABLED=0
+
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", "go test tests/**/**/*_test.go -v"]
