@@ -19,7 +19,7 @@ func (controller BaseController) GetValueFromParamsAsInt(vars map[string]string,
 	if err != nil {
 		return 0, err
 	}
-	return int(value), nil
+	return value, nil
 }
 
 func (controller BaseController) GetValueFromFormAsInt(function func(key string) string, field string) (int, error) {
@@ -27,7 +27,7 @@ func (controller BaseController) GetValueFromFormAsInt(function func(key string)
 	if err != nil {
 		return 0, err
 	}
-	return int(value), nil
+	return value, nil
 }
 
 func (controller BaseController) SendOk(w http.ResponseWriter, r *http.Request, data, metadata interface{}) {

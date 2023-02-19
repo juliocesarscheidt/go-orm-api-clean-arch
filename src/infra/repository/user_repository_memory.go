@@ -12,6 +12,10 @@ type UserRepositoryMemory struct {
 var users []*entity.User
 var lastInsertedId = 0
 
+func (userRepository UserRepositoryMemory) MigrateUser() error {
+	return nil
+}
+
 func (userRepository UserRepositoryMemory) GetUsers(page, size int) ([]*entity.User, error) {
 	startIndex := page * size
 	endIndex := startIndex + size

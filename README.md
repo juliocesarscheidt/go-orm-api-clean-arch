@@ -11,14 +11,6 @@ docker-compose up -d --build go-orm-api
 docker-compose logs -f --tail 100 go-orm-api
 ```
 
-## Running with Docker
-
-```bash
-docker image build --tag juliocesarmidia/go-orm-api:latest .
-
-docker container run --rm --name go-orm-api juliocesarmidia/go-orm-api:latest
-```
-
 ## Code coverage
 
 It was used Sonarqube to gather the coverage for unit tests.

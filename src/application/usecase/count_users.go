@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
-	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
 )
 

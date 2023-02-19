@@ -49,6 +49,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASS: ${MYSQL_PASS}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-go_orm_api}
+      IN_MEMORY_DB: ${IN_MEMORY_DB:-0}
     networks:
       - subnet_0
     restart: on-failure

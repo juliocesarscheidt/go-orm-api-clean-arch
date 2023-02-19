@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 	"github.com/juliocesarscheidt/go-orm-api/infra/controller"
 	"github.com/juliocesarscheidt/go-orm-api/shared/utils"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

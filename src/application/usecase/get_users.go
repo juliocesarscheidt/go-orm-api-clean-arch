@@ -3,7 +3,7 @@ package usecase
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	applicationpresenter "github.com/juliocesarscheidt/go-orm-api/application/presenter"
-	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
+	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 )
 
 type GetUsersUsecase struct {

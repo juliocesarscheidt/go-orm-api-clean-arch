@@ -9,6 +9,10 @@ docker image build \
 
 docker container run --rm \
   --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
+
+docker container run --rm \
+  --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest \
+  sh -c "go vet"
 ```
 
 #### With go CLI

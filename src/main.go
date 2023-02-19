@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/juliocesarscheidt/go-orm-api/domain/entity"
-	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
+	applicationrepository "github.com/juliocesarscheidt/go-orm-api/application/repository"
+	infrarepository "github.com/juliocesarscheidt/go-orm-api/infra/repository"
 	"github.com/juliocesarscheidt/go-orm-api/infra/router"
 	"github.com/juliocesarscheidt/go-orm-api/shared/utils"
 	"gorm.io/driver/mysql"
@@ -14,15 +14,18 @@ import (
 )
 
 func main() {
-	connectionString := utils.GetDbConnectionString()
-	db, _ := gorm.Open(mysql.Open(connectionString), &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: false,
-	})
-	if err := db.AutoMigrate(&entity.User{}); err != nil {
-		utils.Logger.Errorf("Err %v", err)
+	var userRepository applicationrepository.UserRepository
+	// check the usage of repository in memory
+	if utils.GetInMemoryDbConfig() {
+		userRepository = infrarepository.UserRepositoryMemory{}
+	} else {
+		db, _ := gorm.Open(mysql.Open(utils.GetDbConnectionStringConfig()), &gorm.Config{})
+		userRepository = infrarepository.UserRepositoryDatabase{Db: db}
 	}
-	// create repositories
-	userRepository := repository.UserRepositoryDatabase{Db: db}
+	// call migrations
+	if err := userRepository.MigrateUser(); err != nil {
+		panic(err)
+	}
 	// create router and its routes
 	r := router.GetRouter()
 	router.InjectRoutes(r, userRepository)

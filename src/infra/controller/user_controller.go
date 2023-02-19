@@ -6,8 +6,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
+	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
-	"github.com/juliocesarscheidt/go-orm-api/domain/repository"
 	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
