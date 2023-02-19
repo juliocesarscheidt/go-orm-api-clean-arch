@@ -2,7 +2,7 @@ package utils
 
 import "time"
 
-func FormatTimeToRFCRFC3339(datetime time.Time) (result string) {
+func FormatTimeToRFC3339(datetime time.Time) (result string) {
 	if datetime.IsZero() {
 		result = ""
 	} else {

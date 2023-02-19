@@ -14,9 +14,9 @@ func (presenter *UserPresenter) Map(user *entity.User) *dto.UserViewDto {
 		Id:        user.Id,
 		Name:      user.Name,
 		Email:     user.Email,
-		CreatedAt: utils.FormatTimeToRFCRFC3339(user.CreatedAt),
-		UpdatedAt: utils.FormatTimeToRFCRFC3339(user.UpdatedAt),
-		DeletedAt: utils.FormatTimeToRFCRFC3339(user.DeletedAt.Time),
+		CreatedAt: utils.FormatTimeToRFC3339(user.CreatedAt),
+		UpdatedAt: utils.FormatTimeToRFC3339(user.UpdatedAt),
+		DeletedAt: utils.FormatTimeToRFC3339(user.DeletedAt.Time),
 	}
 }
 
