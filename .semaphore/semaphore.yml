@@ -37,4 +37,4 @@ blocks:
             - echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
             - docker image push "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SHORT_SHA"
       secrets:
-        - name: docker-hub
+        - name: github-registry
