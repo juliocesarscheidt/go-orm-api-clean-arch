@@ -7,12 +7,14 @@ docker image build \
   --tag juliocesarmidia/go-orm-api-test:latest \
   -f ./src/test.Dockerfile ./src
 
+# run unit tests only
 docker container run --rm \
   --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
 
+# run vet and unit tests
 docker container run --rm \
   --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest \
-  sh -c "go vet"
+  sh -c "go vet && go test tests/**/**/*_test.go -v"
 ```
 
 #### With go CLI

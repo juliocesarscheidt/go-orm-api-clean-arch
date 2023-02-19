@@ -12,8 +12,12 @@ blocks:
         - name: Run_Unit_Tests
           commands:
             - checkout
-            - docker image build --tag juliocesarmidia/go-orm-api-test:latest -f ./src/test.Dockerfile ./src
-            - docker container run --rm --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest
+            - docker image build \
+                --tag juliocesarmidia/go-orm-api-test:latest \
+                -f ./src/test.Dockerfile ./src
+            - docker container run --rm \
+                --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest \
+                sh -c "go vet && go test tests/**/**/*_test.go -v"
   - name: Check_Vulnerabilities
     dependencies: ["Unit_Tests"]
     task:
