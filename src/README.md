@@ -26,7 +26,8 @@ curl -i --silent -X PATCH \
 curl -i --silent -X DELETE --url 'http://localhost:8000/api/v1/users/1'
 
 # health
-curl --silent -X GET --url 'http://localhost:8000/healthcheck'
+curl --silent -X GET --url 'http://localhost:8000/api/v1/health/live'
+curl --silent -X GET --url 'http://localhost:8000/api/v1/health/ready'
 
 # metrics
 curl --silent -X GET --url 'http://localhost:8000/metrics'

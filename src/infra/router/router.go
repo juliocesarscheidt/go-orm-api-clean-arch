@@ -38,6 +38,7 @@ func InjectRoutes(router *mux.Router, userRepository repository.UserRepository) 
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(userController.UpdateUser()).Methods(http.MethodPatch)
 	router.Path("/api/v1/users/{id:[0-9]+}").HandlerFunc(userController.DeleteUser()).Methods(http.MethodDelete)
 	// crosscutting routes
+	router.Path("/api/v1/health/live").HandlerFunc(healthcheckController.CheckLiveness()).Methods(http.MethodGet)
+	router.Path("/api/v1/health/ready").HandlerFunc(healthcheckController.CheckReadiness()).Methods(http.MethodGet)
 	router.Path("/metrics").Handler(promhttp.Handler()).Methods(http.MethodGet)
-	router.Path("/healthcheck").HandlerFunc(healthcheckController.CheckHealth()).Methods(http.MethodGet)
 }

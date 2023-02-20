@@ -22,13 +22,13 @@ tags:
     description: Services related to User resources
 
 paths:
-  /healthcheck:
+  /api/v1/health/live:
     get:
       tags:
         - HealthChechServices
-      summary: get healthcheck
-      description: get healthcheck
-      operationId: getHealthcheck
+      summary: get liveness
+      description: get liveness
+      operationId: getLiveness
       responses:
         '200':
           description: 'OK'
@@ -42,7 +42,37 @@ paths:
                     properties:
                       status:
                         type: string
-                        example: 'Healthy'
+                        example: 'Alive'
+                  metadata:
+                    $ref: '#/components/schemas/Metadata'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponseServerError'
+
+  /api/v1/health/ready:
+    get:
+      tags:
+        - HealthChechServices
+      summary: get readiness
+      description: get readiness
+      operationId: getReadiness
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: 'Ready'
                   metadata:
                     $ref: '#/components/schemas/Metadata'
         '500':
