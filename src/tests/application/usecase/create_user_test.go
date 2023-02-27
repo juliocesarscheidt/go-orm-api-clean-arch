@@ -58,7 +58,7 @@ func TestCreateUserInvalidPassword(t *testing.T) {
 		Email:    "user@mail.com",
 		Password: "a",
 	}
-	expectedErr := errors.New("Invalid password length")
+	expectedErr := errors.New("Invalid password length, the password must have at least 8 and at most 50 characters")
 	_, err := createUserUsecase.Execute(createUserDto)
 	if err.Error() != expectedErr.Error() {
 		t.Errorf("Expected err to be %v, got %v", expectedErr, err)

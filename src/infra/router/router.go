@@ -2,18 +2,33 @@ package router
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 	"github.com/juliocesarscheidt/go-orm-api/infra/controller"
 	"github.com/juliocesarscheidt/go-orm-api/shared/utils"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/sirupsen/logrus"
 )
+
+func ExtractIpFromRemoteAddr(remoteAddr string) string {
+	addressParts := strings.Split(remoteAddr, ":")
+	if len(addressParts) > 0 {
+		return addressParts[0]
+	}
+	return ""
+}
 
 // LogMiddleware - custom logger middleware method
 func LogMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		utils.Logger.Infof(r.RequestURI)
+		utils.Logger.WithFields(logrus.Fields{
+			"method": r.Method,
+			"path":   r.RequestURI,
+			"host":   r.Host,
+			"ip":     ExtractIpFromRemoteAddr(r.RemoteAddr),
+		}).Infof("")
 		// call next handler
 		next.ServeHTTP(w, r)
 	})

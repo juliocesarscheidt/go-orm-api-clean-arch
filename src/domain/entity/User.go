@@ -33,7 +33,7 @@ func ValidateUserFields(fields map[string]string) error {
 		return errors.New(strings.Join(errorMessages, ", "))
 	}
 	if len(fields["password"]) < 8 || len(fields["password"]) > 50 {
-		return errors.New("Invalid password length")
+		return errors.New("Invalid password length, the password must have at least 8 and at most 50 characters")
 	}
 	return nil
 }
