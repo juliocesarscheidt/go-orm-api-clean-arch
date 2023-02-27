@@ -10,6 +10,8 @@ fail_fast:
 blocks:
   - name: Unit_Tests
     dependencies: []
+    skip:
+      when: "pull_request !~ '.*'"
     task:
       jobs:
         - name: Run_Unit_Tests
@@ -25,17 +27,23 @@ blocks:
                 -f ./src/test.Dockerfile ./src
             - |
               docker container run --rm \
-                --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest \
-                sh -c "go vet && go test tests/**/**/*_test.go -v" | tee -a tests/
+                --name go-orm-api-test \
+                -v "${PWD}/src:/go/src/app" \
+                juliocesarmidia/go-orm-api-test:latest \
+                sh -c 'go vet && go test -cover -coverpkg="github.com/juliocesarscheidt/go-orm-api/application/usecase" -coverprofile cover.out tests/**/**/*_test.go -v'
       epilogue:
         on_pass:
           commands:
             - echo "Unit tests have passed"
+            - ls -lht src/
+            - artifact push job src/cover.out
         on_fail:
           commands:
             - echo "Unit tests have not passed"
   - name: Check_Vulnerabilities
     dependencies: ["Unit_Tests"]
+    skip:
+      when: "pull_request !~ '.*'"
     task:
       jobs:
         - name: Run_Check_Vulnerabilities
@@ -58,6 +66,8 @@ blocks:
             - echo "Vulnerabilities checks have not passed"
   - name: Push_Image
     dependencies: ["Check_Vulnerabilities"]
+    skip:
+      when: "pull_request !~ '.*'"
     task:
       env_vars:
         - name: REPO_OWNER
