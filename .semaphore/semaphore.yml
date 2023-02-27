@@ -17,10 +17,10 @@ blocks:
         - name: Run_Unit_Tests
           commands:
             - checkout
-            - echo "branch, tag, or pull-request  => $SEMAPHORE_GIT_REF_TYPE"
-            - echo "pull request number           => $SEMAPHORE_GIT_PR_NUMBER"
-            - echo "pull request SHA              => $SEMAPHORE_GIT_PR_SHA"
-            - echo "git tag                       => $SEMAPHORE_GIT_TAG_NAME"
+            - echo "Branch, tag, or pull-request  => $SEMAPHORE_GIT_REF_TYPE"
+            - echo "Pull request number           => $SEMAPHORE_GIT_PR_NUMBER"
+            - echo "Pull request SHA              => $SEMAPHORE_GIT_PR_SHA"
+            - echo "Git tag                       => $SEMAPHORE_GIT_TAG_NAME"
             - |
               docker image build \
                 --tag juliocesarmidia/go-orm-api-test:latest \
