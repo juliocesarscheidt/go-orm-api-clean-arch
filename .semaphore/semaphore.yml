@@ -4,24 +4,45 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
+fail_fast:
+  stop:
+    when: "true"
 blocks:
   - name: Unit_Tests
     dependencies: []
+    skip:
+      when: "pull_request !~ '.*'"
     task:
       jobs:
         - name: Run_Unit_Tests
           commands:
             - checkout
+            - echo "branch, tag, or pull-request  => $SEMAPHORE_GIT_REF_TYPE"
+            - echo "pull request number           => $SEMAPHORE_GIT_PR_NUMBER"
+            - echo "pull request SHA              => $SEMAPHORE_GIT_PR_SHA"
+            - echo "git tag                       => $SEMAPHORE_GIT_TAG_NAME"
             - |
               docker image build \
                 --tag juliocesarmidia/go-orm-api-test:latest \
                 -f ./src/test.Dockerfile ./src
             - |
               docker container run --rm \
-                --name go-orm-api-test juliocesarmidia/go-orm-api-test:latest \
-                sh -c "go vet && go test tests/**/**/*_test.go -v"
+                --name go-orm-api-test \
+                -v "${PWD}/src:/go/src/app" \
+                juliocesarmidia/go-orm-api-test:latest \
+                sh -c 'go vet && go test -cover -coverpkg="github.com/juliocesarscheidt/go-orm-api/application/usecase" -coverprofile cover.out tests/**/**/*_test.go -v'
+      epilogue:
+        on_pass:
+          commands:
+            - echo "Unit tests have passed"
+            - artifact push job src/cover.out
+        on_fail:
+          commands:
+            - echo "Unit tests have not passed"
   - name: Check_Vulnerabilities
     dependencies: ["Unit_Tests"]
+    skip:
+      when: "pull_request !~ '.*'"
     task:
       jobs:
         - name: Run_Check_Vulnerabilities
@@ -36,9 +57,23 @@ blocks:
               trivy image --exit-code 1 \
                 --severity CRITICAL --quiet --light \
                 "juliocesarmidia/go-orm-api:latest"
+      epilogue:
+        on_pass:
+          commands:
+            - echo "Vulnerabilities checks have passed"
+        on_fail:
+          commands:
+            - echo "Vulnerabilities checks have not passed"
   - name: Push_Image
     dependencies: ["Check_Vulnerabilities"]
+    skip:
+      when: "pull_request !~ '.*'"
     task:
+      env_vars:
+        - name: REPO_OWNER
+          value: "juliocesarscheidt"
+        - name: REPO_NAME
+          value: "go-orm-api-clean-arch"
       jobs:
         - name: Run_Push_Image
           commands:
@@ -46,11 +81,37 @@ blocks:
             - SHORT_SHA=$(echo "$SEMAPHORE_GIT_SHA" | cut -c1-7)
             - |
               docker image build \
-                --tag "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SHORT_SHA" \
-                --tag "ghcr.io/$GITHUB_USERNAME/go-orm-api:v1.0.0" \
+                --tag "ghcr.io/$GITHUB_USERNAME/$REPO_NAME:$SHORT_SHA" \
+                --tag "ghcr.io/$GITHUB_USERNAME/$REPO_NAME:v1.0.0" \
                 --cache-from=juliocesarmidia/go-orm-api-test:latest ./src
             - echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
-            - docker image push "ghcr.io/$GITHUB_USERNAME/go-orm-api:$SHORT_SHA"
-            - docker image push "ghcr.io/$GITHUB_USERNAME/go-orm-api:v1.0.0"
+            - docker image push "ghcr.io/$GITHUB_USERNAME/$REPO_NAME:$SHORT_SHA"
+            - docker image push "ghcr.io/$GITHUB_USERNAME/$REPO_NAME:v1.0.0"
+      epilogue:
+        on_pass:
+          commands:
+            - |
+              docker container run -i --rm \
+                --env GITHUB_TOKEN=$BOT_GITHUB_TOKEN \
+                --env GITHUB_OWNER=$REPO_OWNER \
+                --env GITHUB_REPO=$REPO_NAME \
+                --env GITHUB_COMMENT_TYPE=pr \
+                --env GITHUB_PR_ISSUE_NUMBER=$SEMAPHORE_GIT_PR_NUMBER \
+                --env GITHUB_COMMENT_FORMAT="<b>Comment</b><br/>{{.}}" \
+                --env GITHUB_COMMENT="✔️ The build of commit $SHORT_SHA was successful, LGTM" \
+                cloudposse/github-commenter:latest
+        on_fail:
+          commands:
+            - |
+              docker container run -i --rm \
+                --env GITHUB_TOKEN=$BOT_GITHUB_TOKEN \
+                --env GITHUB_OWNER=$REPO_OWNER \
+                --env GITHUB_REPO=$REPO_NAME \
+                --env GITHUB_COMMENT_TYPE=pr \
+                --env GITHUB_PR_ISSUE_NUMBER=$SEMAPHORE_GIT_PR_NUMBER \
+                --env GITHUB_COMMENT_FORMAT="<b>Comment</b><br/>{{.}}" \
+                --env GITHUB_COMMENT="❌The build of commit $SHORT_SHA has failed" \
+                cloudposse/github-commenter:latest
       secrets:
         - name: github-registry
+        - name: github-bot
