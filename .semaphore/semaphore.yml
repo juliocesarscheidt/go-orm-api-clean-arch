@@ -10,8 +10,8 @@ fail_fast:
 blocks:
   - name: Unit_Tests
     dependencies: []
-    skip:
-      when: "pull_request !~ '.*'"
+    # skip:
+    #   when: "pull_request !~ '.*'"
     task:
       jobs:
         - name: Run_Unit_Tests
@@ -42,8 +42,8 @@ blocks:
             - echo "Unit tests have not passed"
   - name: Check_Vulnerabilities
     dependencies: ["Unit_Tests"]
-    skip:
-      when: "pull_request !~ '.*'"
+    # skip:
+    #   when: "pull_request !~ '.*'"
     task:
       jobs:
         - name: Run_Check_Vulnerabilities
