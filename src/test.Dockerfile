@@ -1,8 +1,9 @@
 FROM golang:1.18-alpine as builder
+LABEL maintainer="Julio Cesar <julio@blackdevs.com.br>"
 
 WORKDIR /go/src/app
 
-COPY go.mod go.sum /go/src/app/
+COPY go.mod go.sum ./
 RUN go mod download
 
 COPY ./ ./

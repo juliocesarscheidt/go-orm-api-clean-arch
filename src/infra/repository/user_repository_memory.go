@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/juliocesarscheidt/go-orm-api/domain/entity"
 )
@@ -11,6 +12,7 @@ type UserRepositoryMemory struct {
 
 var users []*entity.User
 var lastInsertedId = 0
+var mutex = &sync.Mutex{}
 
 func (userRepository UserRepositoryMemory) MigrateUser() error {
 	return nil
@@ -46,15 +48,19 @@ func (userRepository UserRepositoryMemory) GetUser(id int) (*entity.User, error)
 func (userRepository UserRepositoryMemory) CreateUser(user *entity.User) (int, error) {
 	lastInsertedId = lastInsertedId + 1
 	user.Id = lastInsertedId
+	mutex.Lock()
 	users = append(users, user)
+	mutex.Unlock()
 	return user.Id, nil
 }
 
 func (userRepository UserRepositoryMemory) UpdateUser(id int, user *entity.User) error {
 	for idx, u := range users {
 		if u.Id == id {
+			mutex.Lock()
 			users[idx].Name = user.Name
 			users[idx].Password = user.Password
+			mutex.Unlock()
 			return nil
 		}
 	}
@@ -64,8 +70,10 @@ func (userRepository UserRepositoryMemory) UpdateUser(id int, user *entity.User)
 func (userRepository UserRepositoryMemory) DeleteUser(id int) error {
 	for idx, u := range users {
 		if u.Id == id {
+			mutex.Lock()
 			// remove from slice
 			users = append(users[:idx], users[idx+1:]...)
+			mutex.Unlock()
 			return nil
 		}
 	}
