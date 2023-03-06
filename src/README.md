@@ -1,4 +1,4 @@
-## Testing API
+## Consuming API
 
 ```bash
 curl --silent -X POST \
