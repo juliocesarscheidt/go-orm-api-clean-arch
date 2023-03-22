@@ -4,7 +4,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// using pseudo polymorphism
 type PasswordService struct {
 }
 

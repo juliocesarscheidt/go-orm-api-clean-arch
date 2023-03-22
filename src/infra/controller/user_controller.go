@@ -12,7 +12,7 @@ import (
 	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
-// using pseudo heritage to BaseController
+// using composition to BaseController
 type UserController struct {
 	BaseController
 	CreateUserUsecase *usecase.CreateUserUsecase

@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-// using pseudo heritage to BaseController
+// using composition to BaseController
 type HealthcheckController struct {
 	BaseController
 }
