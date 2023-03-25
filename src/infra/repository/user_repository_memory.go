@@ -18,7 +18,7 @@ func (userRepository UserRepositoryMemory) MigrateUser() error {
 	return nil
 }
 
-func (userRepository UserRepositoryMemory) GetUsers(page, size int) ([]*entity.User, error) {
+func (userRepository UserRepositoryMemory) ListUsers(page, size int) ([]*entity.User, error) {
 	startIndex := page * size
 	endIndex := startIndex + size
 

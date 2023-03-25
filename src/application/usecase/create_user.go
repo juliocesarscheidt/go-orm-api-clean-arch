@@ -3,16 +3,16 @@ package usecase
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/repository"
+	service "github.com/juliocesarscheidt/go-orm-api/application/service"
 	"github.com/juliocesarscheidt/go-orm-api/domain/entity"
-	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
 )
 
 type CreateUserUsecase struct {
 	UserRepository  repository.UserRepository
-	PasswordService domainservice.PasswordService
+	PasswordService service.PasswordService
 }
 
-func NewCreateUserUsecase(userRepository repository.UserRepository, passwordService domainservice.PasswordService) *CreateUserUsecase {
+func NewCreateUserUsecase(userRepository repository.UserRepository, passwordService service.PasswordService) *CreateUserUsecase {
 	return &CreateUserUsecase{
 		UserRepository:  userRepository,
 		PasswordService: passwordService,
