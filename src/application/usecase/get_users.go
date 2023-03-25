@@ -2,24 +2,24 @@ package usecase
 
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
-	applicationpresenter "github.com/juliocesarscheidt/go-orm-api/application/presenter"
+	"github.com/juliocesarscheidt/go-orm-api/application/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 )
 
-type GetUsersUsecase struct {
+type ListUsersUsecase struct {
 	UserRepository repository.UserRepository
-	UserPresenter  applicationpresenter.UserPresenter
+	UserPresenter  presenter.UserPresenter
 }
 
-func NewGetUsersUsecase(userRepository repository.UserRepository, userPresenter applicationpresenter.UserPresenter) *GetUsersUsecase {
-	return &GetUsersUsecase{
+func NewListUsersUsecase(userRepository repository.UserRepository, userPresenter presenter.UserPresenter) *ListUsersUsecase {
+	return &ListUsersUsecase{
 		UserRepository: userRepository,
 		UserPresenter:  userPresenter,
 	}
 }
 
-func (usecase *GetUsersUsecase) Execute(getUsersDto *dto.GetUsersDto) ([]*dto.UserViewDto, error) {
-	users, err := usecase.UserRepository.GetUsers(getUsersDto.Page, getUsersDto.Size)
+func (usecase *ListUsersUsecase) Execute(listUsersDto *dto.ListUsersDto) ([]*dto.UserViewDto, error) {
+	users, err := usecase.UserRepository.ListUsers(listUsersDto.Page, listUsersDto.Size)
 	if err != nil {
 		return nil, err
 	}

@@ -129,9 +129,9 @@ paths:
     get:
       tags:
         - UserServices
-      summary: list user
-      description: list user
-      operationId: listUser
+      summary: list users
+      description: list users
+      operationId: listUsers
       parameters:
         - name: page
           in: query
@@ -155,7 +155,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListUserSuccessResponse'
+                $ref: '#/components/schemas/ListUsersSuccessResponse'
         '401':
           description: 'Unauthorized'
           content:
@@ -446,7 +446,7 @@ components:
         metadata:
           $ref: '#/components/schemas/Metadata'
 
-    ListUserSuccessResponse:
+    ListUsersSuccessResponse:
       type: object
       properties:
         data:

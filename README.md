@@ -17,6 +17,7 @@ It was used Sonarqube to gather the coverage for unit tests.
 ![Quality Gate](./quality-gate/sonarqube.png)
 
 Run sonarqube scan:
+
 ```bash
 cd quality-gate && bash run.sh
 ```
