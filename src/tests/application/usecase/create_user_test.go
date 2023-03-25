@@ -6,14 +6,14 @@ import (
 
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
-	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
+	"github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
-	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
+	"github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
 func TestCreateUserSuccess(t *testing.T) {
-	passwordService := &infraservice.PasswordService{}
-	userPresenter := &infrapresenter.UserPresenter{}
+	passwordService := &service.PasswordService{}
+	userPresenter := &presenter.UserPresenter{}
 	userRepository := repository.UserRepositoryMemory{}
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	getUserUsecase := usecase.NewGetUserUsecase(userRepository, userPresenter)
@@ -49,7 +49,7 @@ func TestCreateUserSuccess(t *testing.T) {
 }
 
 func TestCreateUserInvalidPassword(t *testing.T) {
-	passwordService := &infraservice.PasswordService{}
+	passwordService := &service.PasswordService{}
 	userRepository := repository.UserRepositoryMemory{}
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	// create a user
@@ -66,7 +66,7 @@ func TestCreateUserInvalidPassword(t *testing.T) {
 }
 
 func TestCreateUserInvalidFields(t *testing.T) {
-	passwordService := &infraservice.PasswordService{}
+	passwordService := &service.PasswordService{}
 	userRepository := repository.UserRepositoryMemory{}
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
 	// create a user

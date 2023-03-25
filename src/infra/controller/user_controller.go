@@ -8,8 +8,8 @@ import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/repository"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
-	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
-	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
+	"github.com/juliocesarscheidt/go-orm-api/infra/presenter"
+	"github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
 // using composition to BaseController
@@ -17,19 +17,19 @@ type UserController struct {
 	BaseController
 	CreateUserUsecase *usecase.CreateUserUsecase
 	GetUserUsecase    *usecase.GetUserUsecase
-	GetUsersUsecase   *usecase.GetUsersUsecase
+	ListUsersUsecase  *usecase.ListUsersUsecase
 	UpdateUserUsecase *usecase.UpdateUserUsecase
 	DeleteUserUsecase *usecase.DeleteUserUsecase
 	CountUsersUsecase *usecase.CountUsersUsecase
 }
 
 func NewUserController(userRepository repository.UserRepository) *UserController {
-	passwordService := &infraservice.PasswordService{}
-	userPresenter := &infrapresenter.UserPresenter{}
+	passwordService := &service.PasswordService{}
+	userPresenter := &presenter.UserPresenter{}
 	return &UserController{
 		CreateUserUsecase: usecase.NewCreateUserUsecase(userRepository, passwordService),
 		GetUserUsecase:    usecase.NewGetUserUsecase(userRepository, userPresenter),
-		GetUsersUsecase:   usecase.NewGetUsersUsecase(userRepository, userPresenter),
+		ListUsersUsecase:  usecase.NewListUsersUsecase(userRepository, userPresenter),
 		UpdateUserUsecase: usecase.NewUpdateUserUsecase(userRepository, passwordService),
 		DeleteUserUsecase: usecase.NewDeleteUserUsecase(userRepository),
 		CountUsersUsecase: usecase.NewCountUsersUsecase(userRepository),
@@ -77,15 +77,15 @@ func (controller UserController) GetUser() http.HandlerFunc {
 	}
 }
 
-func (controller UserController) GetUsers() http.HandlerFunc {
+func (controller UserController) ListUsers() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		page, _ := controller.GetValueFromFormAsInt(r.FormValue, "page")
 		size, _ := controller.GetValueFromFormAsInt(r.FormValue, "size")
-		getUsersDto := &dto.GetUsersDto{Page: page, Size: size}
+		listUsersDto := &dto.ListUsersDto{Page: page, Size: size}
 
-		users, err := controller.GetUsersUsecase.Execute(getUsersDto)
+		users, err := controller.ListUsersUsecase.Execute(listUsersDto)
 		if err != nil {
 			controller.HandleError(w, r, err)
 			return

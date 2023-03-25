@@ -15,7 +15,7 @@ func (userRepository UserRepositoryDatabase) MigrateUser() error {
 	return userRepository.Db.AutoMigrate(&entity.User{})
 }
 
-func (userRepository UserRepositoryDatabase) GetUsers(page, size int) ([]*entity.User, error) {
+func (userRepository UserRepositoryDatabase) ListUsers(page, size int) ([]*entity.User, error) {
 	var users []*entity.User
 	userRepository.Db.Limit(size).Offset(page * size).Find(&users)
 	if len(users) == 0 {
