@@ -3,12 +3,12 @@ package usecase
 import (
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/repository"
-	domainservice "github.com/juliocesarscheidt/go-orm-api/domain/service"
+	service "github.com/juliocesarscheidt/go-orm-api/application/service"
 )
 
 type DeleteUserUsecase struct {
 	UserRepository  repository.UserRepository
-	PasswordService domainservice.PasswordService
+	PasswordService service.PasswordService
 }
 
 func NewDeleteUserUsecase(userRepository repository.UserRepository) *DeleteUserUsecase {

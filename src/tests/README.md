@@ -1,6 +1,6 @@
 ## Running unit tests
 
-#### With Docker
+### With Docker
 
 ```bash
 docker image build \
@@ -17,7 +17,7 @@ docker container run --rm \
   sh -c "go vet && go test tests/**/**/*_test.go -v"
 ```
 
-#### With go CLI
+### With go CLI
 
 ```bash
 cd ./src

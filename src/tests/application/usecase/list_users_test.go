@@ -5,17 +5,17 @@ import (
 
 	"github.com/juliocesarscheidt/go-orm-api/application/dto"
 	"github.com/juliocesarscheidt/go-orm-api/application/usecase"
-	infrapresenter "github.com/juliocesarscheidt/go-orm-api/infra/presenter"
+	"github.com/juliocesarscheidt/go-orm-api/infra/presenter"
 	"github.com/juliocesarscheidt/go-orm-api/infra/repository"
-	infraservice "github.com/juliocesarscheidt/go-orm-api/infra/service"
+	"github.com/juliocesarscheidt/go-orm-api/infra/service"
 )
 
-func TestGetUsersEmptySuccess(t *testing.T) {
+func TestListUsersEmptySuccess(t *testing.T) {
 	userRepository := repository.UserRepositoryMemory{}
-	userPresenter := &infrapresenter.UserPresenter{}
-	getUsersUsecase := usecase.NewGetUsersUsecase(userRepository, userPresenter)
-	getUsersDto := &dto.GetUsersDto{Page: 0, Size: 1}
-	users, err := getUsersUsecase.Execute(getUsersDto)
+	userPresenter := &presenter.UserPresenter{}
+	listUsersUsecase := usecase.NewListUsersUsecase(userRepository, userPresenter)
+	listUsersDto := &dto.ListUsersDto{Page: 0, Size: 1}
+	users, err := listUsersUsecase.Execute(listUsersDto)
 	if err != nil {
 		t.Errorf("Expected err to be nil, got %v", err)
 	}
@@ -24,9 +24,9 @@ func TestGetUsersEmptySuccess(t *testing.T) {
 	}
 }
 
-func TestGetUsersNonEmptySuccess(t *testing.T) {
-	passwordService := &infraservice.PasswordService{}
-	userPresenter := &infrapresenter.UserPresenter{}
+func TestListUsersNonEmptySuccess(t *testing.T) {
+	passwordService := &service.PasswordService{}
+	userPresenter := &presenter.UserPresenter{}
 	userRepository := repository.UserRepositoryMemory{}
 	// create some user
 	createUserUsecase := usecase.NewCreateUserUsecase(userRepository, passwordService)
@@ -40,8 +40,8 @@ func TestGetUsersNonEmptySuccess(t *testing.T) {
 		t.Errorf("Expected err to be nil, got %v", err)
 	}
 	// retrieve users of page 0 (it should return the user)
-	getUsersUsecase := usecase.NewGetUsersUsecase(userRepository, userPresenter)
-	users, err := getUsersUsecase.Execute(&dto.GetUsersDto{Page: 0, Size: 10})
+	listUsersUsecase := usecase.NewListUsersUsecase(userRepository, userPresenter)
+	users, err := listUsersUsecase.Execute(&dto.ListUsersDto{Page: 0, Size: 10})
 	if err != nil {
 		t.Errorf("Expected err to be nil, got %v", err)
 	}
@@ -61,7 +61,7 @@ func TestGetUsersNonEmptySuccess(t *testing.T) {
 		t.Errorf("Expected counter to be 1, got %v", counter)
 	}
 	// retrieve users of page 1 (it should not return anything)
-	users, _ = getUsersUsecase.Execute(&dto.GetUsersDto{Page: 1, Size: 10})
+	users, _ = listUsersUsecase.Execute(&dto.ListUsersDto{Page: 1, Size: 10})
 	if users != nil {
 		t.Errorf("Expected user to be not nil, got %v", users)
 	}
