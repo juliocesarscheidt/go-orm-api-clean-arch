@@ -59,7 +59,7 @@ function scan_project() {
     -e PROJECT_KEY \
     -v "${PWD}/src:/go/src/app" \
     juliocesarmidia/go-orm-api-test:latest \
-    sh -c "go test -cover -coverpkg=\"github.com/juliocesarscheidt/${PROJECT_KEY}/application/usecase\" -coverprofile cover.out tests/**/**/*_test.go -v"
+    sh -c "go test -cover -coverpkg=\"github.com/juliocesarscheidt/${PROJECT_KEY}/application/usecase\" -coverprofile cover.out tests/application/**/*_test.go -v"
   cat "${PWD}/src/cover.out"
   # running sonarqube scanner
   docker container run --rm \
